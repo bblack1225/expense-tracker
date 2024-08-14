@@ -1,1 +1,10 @@
-spring.application.name=backend
+server:
+  servlet:
+    context-path: /api
+  port: 8091
+spring:
+  datasource:
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/expense_tracker
+    driver-class-name: org.postgresql.Driver
