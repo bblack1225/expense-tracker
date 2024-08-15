@@ -8,3 +8,13 @@ spring:
     password: postgres
     url: jdbc:postgresql://localhost:5432/expense_tracker
     driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG

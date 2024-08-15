@@ -10,13 +10,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Data
 @Entity
-@Table(name = "comments")
-public class Comments implements Serializable {
+@Table(name = "members")
+public class Member implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -25,14 +24,17 @@ public class Comments implements Serializable {
     @Column(name = "id", nullable = false)
     private String id;
 
-    @Column(name = "content", nullable = false)
-    private String content;
-
-    @Column(name = "member_id", nullable = false)
-    private String memberId;
-
     @Column(name = "book_id", nullable = false)
     private String bookId;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "email", nullable = false)
+    private String email;
+
+    @Column(name = "share", nullable = false)
+    private Integer share;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

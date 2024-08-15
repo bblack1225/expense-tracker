@@ -1,9 +1,7 @@
 package com.blake.expensetrackerbackend.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.blake.expensetrackerbackend.enums.TransactionRecordType;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -26,7 +24,7 @@ public class TransactionRecord implements Serializable {
     private String id;
 
     @Column(name = "amount", nullable = false)
-    private Long amount;
+    private Integer amount;
 
     @Column(name = "transaction_date", nullable = false)
     private LocalDate transactionDate;
@@ -44,7 +42,8 @@ public class TransactionRecord implements Serializable {
     private String bookId;
 
     @Column(name = "type", nullable = false)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private TransactionRecordType type;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

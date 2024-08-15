@@ -1,9 +1,7 @@
 package com.blake.expensetrackerbackend.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.blake.expensetrackerbackend.enums.TransactionRecordType;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -32,7 +30,8 @@ public class TransactionCategory implements Serializable {
     private String icon;
 
     @Column(name = "type", nullable = false)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private TransactionRecordType type;
 
     @Column(name = "book_id", nullable = false)
     private String bookId;
