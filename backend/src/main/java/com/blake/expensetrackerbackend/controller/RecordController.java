@@ -2,10 +2,9 @@ package com.blake.expensetrackerbackend.controller;
 
 import com.blake.expensetrackerbackend.model.request.CreateRecordRequest;
 import com.blake.expensetrackerbackend.model.response.CreateRecordResponse;
-import com.blake.expensetrackerbackend.service.RecordService;
+import com.blake.expensetrackerbackend.service.api.RecordApiService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class RecordController {
 
-    private final RecordService recordService;
+    private final RecordApiService recordService;
 
     @GetMapping
     public void getRecords(){

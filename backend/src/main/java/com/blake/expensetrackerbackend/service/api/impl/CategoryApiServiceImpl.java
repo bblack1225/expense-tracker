@@ -1,4 +1,4 @@
-package com.blake.expensetrackerbackend.service.impl;
+package com.blake.expensetrackerbackend.service.api.impl;
 
 import com.blake.expensetrackerbackend.exception.ServiceException;
 import com.blake.expensetrackerbackend.model.entity.TransactionCategory;
@@ -6,7 +6,9 @@ import com.blake.expensetrackerbackend.model.request.CreateCategoryRequest;
 import com.blake.expensetrackerbackend.model.response.CreateCategoryResponse;
 import com.blake.expensetrackerbackend.repository.AccountingBookRepository;
 import com.blake.expensetrackerbackend.repository.TransactionCategoryRepository;
-import com.blake.expensetrackerbackend.service.CategoryService;
+import com.blake.expensetrackerbackend.service.api.CategoryApiService;
+import com.blake.expensetrackerbackend.service.internal.BookInternalService;
+import com.blake.expensetrackerbackend.service.internal.impl.BookInternalServiceImpl;
 import com.github.shamil.Xid;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,15 +17,15 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryApiServiceImpl implements CategoryApiService {
 
     private final TransactionCategoryRepository categoryRepository;
-    private final AccountingBookRepository bookRepository;
+    private final BookInternalService bookInternalService;
 
     @Override
     public CreateCategoryResponse createCategory(CreateCategoryRequest request) {
         TransactionCategory category = new TransactionCategory();
-        if(bookRepository.findById(request.getBookId()).isEmpty()){
+        if(!bookInternalService.isAccountingBookExists(request.getBookId())){
             throw new ServiceException("Accounting book not found");
         }
 

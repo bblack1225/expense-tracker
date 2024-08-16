@@ -4,10 +4,9 @@ import com.blake.expensetrackerbackend.model.request.CreateMemberRequest;
 import com.blake.expensetrackerbackend.model.request.QueryMemberRequest;
 import com.blake.expensetrackerbackend.model.response.CreateMemberResponse;
 import com.blake.expensetrackerbackend.model.response.QueryMemberResponse;
-import com.blake.expensetrackerbackend.service.MemberService;
+import com.blake.expensetrackerbackend.service.api.MemberApiService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,15 +16,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberService memberService;
+    private final MemberApiService memberApiService;
 
     @GetMapping
     public List<QueryMemberResponse> queryMembers(@Valid @RequestBody QueryMemberRequest request){
-        return memberService.queryMembers(request);
+        return memberApiService.queryMembers(request);
     }
 
     @PostMapping
     public CreateMemberResponse createMember(@Valid @RequestBody CreateMemberRequest request){
-        return memberService.createMember(request);
+        return memberApiService.createMember(request);
     }
 }

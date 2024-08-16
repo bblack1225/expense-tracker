@@ -1,4 +1,4 @@
-package com.blake.expensetrackerbackend.service.impl;
+package com.blake.expensetrackerbackend.service.api.impl;
 
 import com.blake.expensetrackerbackend.exception.ServiceException;
 import com.blake.expensetrackerbackend.model.entity.Member;
@@ -8,7 +8,8 @@ import com.blake.expensetrackerbackend.model.response.CreateMemberResponse;
 import com.blake.expensetrackerbackend.model.response.QueryMemberResponse;
 import com.blake.expensetrackerbackend.repository.AccountingBookRepository;
 import com.blake.expensetrackerbackend.repository.MemberRepository;
-import com.blake.expensetrackerbackend.service.MemberService;
+import com.blake.expensetrackerbackend.service.api.MemberApiService;
+import com.blake.expensetrackerbackend.service.internal.BookInternalService;
 import com.github.shamil.Xid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +20,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MemberServiceImpl implements MemberService {
+public class MemberApiServiceImpl implements MemberApiService {
 
     private final MemberRepository memberRepository;
-    private final AccountingBookRepository bookRepository;
+    private final BookInternalService bookInternalService;
 
     @Override
     public List<QueryMemberResponse> queryMembers(QueryMemberRequest request) {
@@ -36,7 +37,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public CreateMemberResponse createMember(CreateMemberRequest request) {
         Member member = new Member();
-        if(bookRepository.findById(request.getBookId()).isEmpty()){
+        if(!bookInternalService.isAccountingBookExists(request.getBookId())){
             throw new ServiceException("Accounting book not found");
         }
         String id = Xid.string();

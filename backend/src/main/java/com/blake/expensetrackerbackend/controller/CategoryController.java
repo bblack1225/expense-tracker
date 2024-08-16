@@ -2,7 +2,7 @@ package com.blake.expensetrackerbackend.controller;
 
 import com.blake.expensetrackerbackend.model.request.CreateCategoryRequest;
 import com.blake.expensetrackerbackend.model.response.CreateCategoryResponse;
-import com.blake.expensetrackerbackend.service.CategoryService;
+import com.blake.expensetrackerbackend.service.api.CategoryApiService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    private final CategoryService categoryService;
+    private final CategoryApiService categoryApiService;
 
     @PostMapping
     public CreateCategoryResponse createCategory(@Valid @RequestBody CreateCategoryRequest request){
-        return categoryService.createCategory(request);
+        return categoryApiService.createCategory(request);
     }
 }

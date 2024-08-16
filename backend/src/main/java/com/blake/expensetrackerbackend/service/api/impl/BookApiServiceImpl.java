@@ -1,10 +1,10 @@
-package com.blake.expensetrackerbackend.service.impl;
+package com.blake.expensetrackerbackend.service.api.impl;
 
 import com.blake.expensetrackerbackend.model.entity.AccountingBook;
 import com.blake.expensetrackerbackend.model.request.CreateAccountBookRequest;
 import com.blake.expensetrackerbackend.model.response.CreateAccountBookResponse;
 import com.blake.expensetrackerbackend.repository.AccountingBookRepository;
-import com.blake.expensetrackerbackend.service.BookService;
+import com.blake.expensetrackerbackend.service.api.BookApiService;
 import com.github.shamil.Xid;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class BookServiceImpl implements BookService {
+public class BookApiServiceImpl implements BookApiService {
 
     private final AccountingBookRepository bookRepository;
     @Override
