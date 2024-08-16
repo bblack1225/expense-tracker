@@ -12,6 +12,7 @@ import com.blake.expensetrackerbackend.service.api.RecordApiService;
 import com.blake.expensetrackerbackend.service.internal.BookInternalService;
 import com.blake.expensetrackerbackend.service.internal.CategoryInternalService;
 import com.blake.expensetrackerbackend.service.internal.MemberInternalService;
+import com.blake.expensetrackerbackend.utils.DateUtil;
 import com.github.shamil.Xid;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,7 @@ public class RecordApiServiceImpl implements RecordApiService {
         String id = Xid.string();
         transactionRecord.setId(id);
         transactionRecord.setAmount(request.getAmount());
-        LocalDate date = LocalDate.parse(request.getTransactionDate());
+        LocalDate date = DateUtil.parseDate(request.getTransactionDate());
         transactionRecord.setTransactionDate(date);
         transactionRecord.setDescription(request.getDescription());
         transactionRecord.setCategoryId(categoryId);
