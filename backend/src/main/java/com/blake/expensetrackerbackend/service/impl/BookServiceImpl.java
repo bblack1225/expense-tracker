@@ -23,7 +23,7 @@ public class BookServiceImpl implements BookService {
         book.setId(id);
         book.setName(request.getName());
         book.setPin(request.getPin());
-        bookRepository.save(book);
-        return new CreateAccountBookResponse(id, book.getName(), book.getPin());
+        book = bookRepository.save(book);
+        return new CreateAccountBookResponse(book.getId(), book.getName(), book.getPin());
     }
 }

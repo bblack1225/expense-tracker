@@ -45,10 +45,10 @@ public class MemberServiceImpl implements MemberService {
         member.setEmail(request.getEmail());
         member.setBookId(request.getBookId());
         member.setShare(request.getShare());
-        memberRepository.save(member);
+        member = memberRepository.save(member);
         return new CreateMemberResponse
                 (
-                id, member.getName(), member.getEmail(), member.getBookId(), member.getShare()
+                member.getId(), member.getName(), member.getEmail(), member.getBookId(), member.getShare()
         );
     }
 }

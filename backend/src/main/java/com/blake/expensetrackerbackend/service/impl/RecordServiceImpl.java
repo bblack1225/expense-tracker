@@ -40,27 +40,27 @@ public class RecordServiceImpl implements RecordService {
             throw new ServiceException("Category not found");
         }
 
-        TransactionRecord record = new TransactionRecord();
+        TransactionRecord transactionRecord = new TransactionRecord();
         String id = Xid.string();
-        record.setId(id);
-        record.setAmount(request.getAmount());
+        transactionRecord.setId(id);
+        transactionRecord.setAmount(request.getAmount());
         LocalDate date = LocalDate.parse(request.getTransactionDate());
-        record.setTransactionDate(date);
-        record.setDescription(request.getDescription());
-        record.setCategoryId(request.getCategoryId());
-        record.setMemberId(request.getMemberId());
-        record.setBookId(request.getBookId());
-        record.setType(request.getType());
-        recordRepository.save(record);
+        transactionRecord.setTransactionDate(date);
+        transactionRecord.setDescription(request.getDescription());
+        transactionRecord.setCategoryId(request.getCategoryId());
+        transactionRecord.setMemberId(request.getMemberId());
+        transactionRecord.setBookId(request.getBookId());
+        transactionRecord.setType(request.getType());
+        transactionRecord = recordRepository.save(transactionRecord);
         return new CreateRecordResponse(
-                id,
-                record.getAmount(),
+                transactionRecord.getId(),
+                transactionRecord.getAmount(),
                 request.getTransactionDate(),
-                record.getDescription(),
-                record.getCategoryId(),
-                record.getMemberId(),
-                record.getBookId(),
-                record.getType().name()
+                transactionRecord.getDescription(),
+                transactionRecord.getCategoryId(),
+                transactionRecord.getMemberId(),
+                transactionRecord.getBookId(),
+                transactionRecord.getType().name()
         );
     }
 }

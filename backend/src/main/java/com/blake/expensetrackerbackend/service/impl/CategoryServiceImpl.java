@@ -33,8 +33,8 @@ public class CategoryServiceImpl implements CategoryService {
         category.setName(request.getName());
         category.setIcon(request.getIcon());
         category.setBookId(request.getBookId());
-        categoryRepository.save(category);
-        return new CreateCategoryResponse(id, category.getName(),
+        category = categoryRepository.save(category);
+        return new CreateCategoryResponse(category.getId(), category.getName(),
                 category.getIcon(), category.getType(), category.getBookId());
     }
 }
