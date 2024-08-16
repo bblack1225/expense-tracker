@@ -44,8 +44,8 @@ public class RecordApiServiceImpl implements RecordApiService {
             throw new ServiceException("Member not found");
         }
 
-        if(!categoryInternalService.isCategoryExists(categoryId)){
-            throw new ServiceException("Category not found");
+        if(!categoryInternalService.isCategoryMatchTransactionType(categoryId, request.getType())){
+            throw new ServiceException("Category Not Match Transaction Type");
         }
 
         TransactionRecord transactionRecord = new TransactionRecord();

@@ -53,7 +53,7 @@ class RecordApiServiceImplTest {
 
         when(bookInternalService.isAccountingBookExists(request.getBookId())).thenReturn(true);
         when(memberInternalService.isMemberExists(request.getMemberId())).thenReturn(true);
-        when(categoryInternalService.isCategoryExists(request.getCategoryId())).thenReturn(true);
+        when(categoryInternalService.isCategoryMatchTransactionType(request.getCategoryId(), request.getType())).thenReturn(true);
 
         TransactionRecord savedRecord = new TransactionRecord();
         String expectedId = Xid.string();
@@ -96,7 +96,7 @@ class RecordApiServiceImplTest {
 
         when(bookInternalService.isAccountingBookExists(request.getBookId())).thenReturn(true);
         when(memberInternalService.isMemberExists(request.getMemberId())).thenReturn(true);
-        when(categoryInternalService.isCategoryExists(request.getCategoryId())).thenReturn(true);
+        when(categoryInternalService.isCategoryMatchTransactionType(request.getCategoryId(), request.getType())).thenReturn(true);
 
         // when
         ServiceException exception = assertThrows(ServiceException.class, () -> {
