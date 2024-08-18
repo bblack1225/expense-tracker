@@ -4,8 +4,16 @@ meta {
   seq: 1
 }
 
-get {
-  url: 
-  body: none
+post {
+  url: {{url}}/api/categories
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "bookId":"cr06vdkn5e4j3eplcpn0",
+    "name": "繳費",
+    "type":"OUT"
+  }
 }

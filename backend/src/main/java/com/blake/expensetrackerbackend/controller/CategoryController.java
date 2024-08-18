@@ -2,13 +2,11 @@ package com.blake.expensetrackerbackend.controller;
 
 import com.blake.expensetrackerbackend.model.request.CreateCategoryRequest;
 import com.blake.expensetrackerbackend.model.response.CreateCategoryResponse;
+import com.blake.expensetrackerbackend.model.response.QueryAllCategoryResponse;
 import com.blake.expensetrackerbackend.service.api.CategoryApiService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/categories")
@@ -16,6 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryController {
 
     private final CategoryApiService categoryApiService;
+
+    @GetMapping("/{bookId}")
+    private QueryAllCategoryResponse queryCategories(@PathVariable String bookId){
+        return categoryApiService.queryCategories(bookId);
+    }
 
     @PostMapping
     public CreateCategoryResponse createCategory(@Valid @RequestBody CreateCategoryRequest request){
