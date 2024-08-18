@@ -16,4 +16,12 @@ public class BaseExceptionHandler {
         errorResponse.setErrorMessage(se.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
+
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception e){
+        log.error("Exception Error: ", e);
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setErrorMessage("Internal Server Error");
+        return ResponseEntity.internalServerError().body(errorResponse);
+    }
 }
