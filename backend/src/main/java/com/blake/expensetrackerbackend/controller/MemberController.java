@@ -1,7 +1,6 @@
 package com.blake.expensetrackerbackend.controller;
 
 import com.blake.expensetrackerbackend.model.request.CreateMemberRequest;
-import com.blake.expensetrackerbackend.model.request.QueryMemberRequest;
 import com.blake.expensetrackerbackend.model.response.CreateMemberResponse;
 import com.blake.expensetrackerbackend.model.response.QueryMemberResponse;
 import com.blake.expensetrackerbackend.service.api.MemberApiService;
@@ -18,9 +17,9 @@ public class MemberController {
 
     private final MemberApiService memberApiService;
 
-    @GetMapping
-    public List<QueryMemberResponse> queryMembers(@Valid @RequestBody QueryMemberRequest request){
-        return memberApiService.queryMembers(request);
+    @GetMapping("/{bookId}")
+    public List<QueryMemberResponse> queryMembers(@PathVariable String bookId){
+        return memberApiService.queryMembers(bookId);
     }
 
     @PostMapping

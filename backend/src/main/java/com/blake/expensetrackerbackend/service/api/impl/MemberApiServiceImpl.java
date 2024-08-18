@@ -3,10 +3,8 @@ package com.blake.expensetrackerbackend.service.api.impl;
 import com.blake.expensetrackerbackend.exception.ServiceException;
 import com.blake.expensetrackerbackend.model.entity.Member;
 import com.blake.expensetrackerbackend.model.request.CreateMemberRequest;
-import com.blake.expensetrackerbackend.model.request.QueryMemberRequest;
 import com.blake.expensetrackerbackend.model.response.CreateMemberResponse;
 import com.blake.expensetrackerbackend.model.response.QueryMemberResponse;
-import com.blake.expensetrackerbackend.repository.AccountingBookRepository;
 import com.blake.expensetrackerbackend.repository.MemberRepository;
 import com.blake.expensetrackerbackend.service.api.MemberApiService;
 import com.blake.expensetrackerbackend.service.internal.BookInternalService;
@@ -26,8 +24,8 @@ public class MemberApiServiceImpl implements MemberApiService {
     private final BookInternalService bookInternalService;
 
     @Override
-    public List<QueryMemberResponse> queryMembers(QueryMemberRequest request) {
-        List<Member> members = memberRepository.findByBookId(request.getBookId());
+    public List<QueryMemberResponse> queryMembers(String bookId) {
+        List<Member> members = memberRepository.findByBookId(bookId);
         return members
                 .stream()
                 .map(member -> new QueryMemberResponse(member.getId(), member.getName(),

@@ -5,7 +5,16 @@ meta {
 }
 
 post {
-  url: http://localhost:8091/members
-  body: none
+  url: http://localhost:8091/api/members
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "bookId":"cr06vdkn5e4j3eplcpn0",
+    "name":"Queenie",
+    "email":"queenie.yen1220@gmail.com",
+    "share":6000
+  }
 }
