@@ -4,9 +4,7 @@ import com.blake.expensetrackerbackend.exception.ServiceException;
 import com.blake.expensetrackerbackend.model.entity.TransactionRecord;
 import com.blake.expensetrackerbackend.model.request.CreateRecordRequest;
 import com.blake.expensetrackerbackend.model.response.CreateRecordResponse;
-import com.blake.expensetrackerbackend.repository.AccountingBookRepository;
-import com.blake.expensetrackerbackend.repository.MemberRepository;
-import com.blake.expensetrackerbackend.repository.TransactionCategoryRepository;
+import com.blake.expensetrackerbackend.model.response.QueryAllRecordResponse;
 import com.blake.expensetrackerbackend.repository.TransactionRecordRepository;
 import com.blake.expensetrackerbackend.service.api.RecordApiService;
 import com.blake.expensetrackerbackend.service.internal.BookInternalService;
@@ -16,13 +14,16 @@ import com.blake.expensetrackerbackend.utils.DateUtil;
 import com.github.shamil.Xid;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class RecordApiServiceImpl implements RecordApiService {
 
     private final BookInternalService bookInternalService;
@@ -70,5 +71,23 @@ public class RecordApiServiceImpl implements RecordApiService {
                 transactionRecord.getBookId(),
                 transactionRecord.getType().name()
         );
+    }
+
+    @Override
+    public List<QueryAllRecordResponse> getRecords(String bookId, String start, String end) {
+        List<TransactionRecord> records =
+                recordRepository.queryAllRecords(bookId, DateUtil.parseDate(start), DateUtil.parseDate(end));
+        return records.stream().map(
+                transactionRecord -> new QueryAllRecordResponse(
+                        transactionRecord.getId(),
+                        transactionRecord.getAmount(),
+                        transactionRecord.getTransactionDate().toString(),
+                        transactionRecord.getDescription(),
+                        transactionRecord.getCategoryId(),
+                        transactionRecord.getMemberId(),
+                        transactionRecord.getBookId(),
+                        transactionRecord.getType()
+                )
+        ).toList();
     }
 }

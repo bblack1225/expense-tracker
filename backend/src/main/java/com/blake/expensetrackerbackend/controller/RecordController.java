@@ -2,10 +2,13 @@ package com.blake.expensetrackerbackend.controller;
 
 import com.blake.expensetrackerbackend.model.request.CreateRecordRequest;
 import com.blake.expensetrackerbackend.model.response.CreateRecordResponse;
+import com.blake.expensetrackerbackend.model.response.QueryAllRecordResponse;
 import com.blake.expensetrackerbackend.service.api.RecordApiService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/records")
@@ -14,9 +17,10 @@ public class RecordController {
 
     private final RecordApiService recordService;
 
-    @GetMapping
-    public void getRecords(){
-        System.out.println("Get records");
+    @GetMapping("/{bookId}")
+    public List<QueryAllRecordResponse> getRecords(@PathVariable String bookId,
+                                                   @RequestParam String start, @RequestParam String end){
+        return recordService.getRecords(bookId, start, end);
     }
 
     @PostMapping
