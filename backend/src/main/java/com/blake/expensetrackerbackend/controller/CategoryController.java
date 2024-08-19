@@ -16,7 +16,7 @@ public class CategoryController {
     private final CategoryApiService categoryApiService;
 
     @GetMapping("/{bookId}")
-    private QueryAllCategoryResponse queryCategories(@PathVariable String bookId){
+    public QueryAllCategoryResponse queryCategories(@PathVariable String bookId){
         return categoryApiService.queryCategories(bookId);
     }
 

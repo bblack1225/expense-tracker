@@ -17,10 +17,10 @@ public class MemberController {
 
     private final MemberApiService memberApiService;
 
-    @GetMapping("/{bookId}")
-    public List<QueryMemberResponse> queryMembers(@PathVariable String bookId){
-        return memberApiService.queryMembers(bookId);
-    }
+//    @GetMapping("/{bookId}")
+//    public List<QueryMemberResponse> queryMembers(@PathVariable String bookId){
+//        return memberApiService.queryMembers(bookId);
+//    }
 
     @PostMapping
     public CreateMemberResponse createMember(@Valid @RequestBody CreateMemberRequest request){
