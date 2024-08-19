@@ -1,9 +1,9 @@
-export type GetCategoriesResponse = {
-  inCategories: Category[];
-  outCategories: Category[];
+export type GroupCategories = {
+  inCategories: CategoryRes[];
+  outCategories: CategoryRes[];
 };
 
-export type Category = {
+export type CategoryRes = {
   id: string;
   name: string;
   icon: string;

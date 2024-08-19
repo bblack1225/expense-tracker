@@ -1,3 +1,4 @@
+import MainContent from "@/components/records/MainContent";
 import { getCategoriesByBookId } from "@/services/category";
 import { getMembersByBookId } from "@/services/member";
 import {
@@ -12,8 +13,6 @@ export default async function Page({ params }: { params: { bookId: string } }) {
   const { bookId } = params;
   const members = await getMembersByBookId(bookId);
   const categories = await getCategoriesByBookId(bookId);
-  console.log("members", members);
-  console.log("categories", categories);
 
   return (
     <div className="bg-background">
@@ -26,6 +25,7 @@ export default async function Page({ params }: { params: { bookId: string } }) {
           新增紀錄
         </Link>
       </div>
+      <MainContent members={members} categories={categories} />
       {/* <HydrationBoundary state={dehydrate(queryClient)}> */}
       {/* <MainContent categories={categories} members={members} /> */}
       {/* </HydrationBoundary> */}
