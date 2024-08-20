@@ -1,15 +1,16 @@
 import axios from "axios";
+import { env } from "process";
 
-const axiosInstance = axios.create({
-  baseURL: "http://localhost:8091",
+const axiosBackendInstance = axios.create({
+  baseURL: `${env.NEXT_PUBLIC_API_BASE_URL}/api`,
   //   withCredentials: true,
 });
 
-axiosInstance.interceptors.response.use(
+axiosBackendInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     return Promise.reject(error);
   }
 );
 
-export default axiosInstance;
+export default axiosBackendInstance;

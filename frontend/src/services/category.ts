@@ -1,9 +1,9 @@
 import { GroupCategories } from "@/types/category";
-import axiosInstance from "./axiosInstance";
+import axiosBackendInstance from "./axiosInstance";
 
 export const getCategoriesByBookId = async (
   bookId: string
 ): Promise<GroupCategories> => {
-  const res = await axiosInstance.get(`/api/books/${bookId}/categories`);
+  const res = await axiosBackendInstance.get(`/books/${bookId}/categories`);
   return res.data;
 };

@@ -1,8 +1,27 @@
 import { RecordRes } from "@/types/record";
-import axiosInstance from "./axiosInstance"
+import axiosBackendInstance from "./axiosInstance";
+import { getCalendarRange } from "@/lib/dateUtil";
 
-export const getRecordsByBookIdAndDate = 
-async(bookId: string, start: string, end: string):Promise<RecordRes[]>  => {
-  const res = await axiosInstance.get(`/api/books/${bookId}?start=${start}&end=${end}`);
-  return res.data;   
-}
+export const getRecordsByBookIdAndDate = async (
+  bookId: string,
+  start: string | null,
+  end: string | null
+): Promise<RecordRes[]> => {
+  const year = new Date().getFullYear();
+  const month = new Date().getMonth() + 1;
+
+  let startDate;
+  let endDate;
+  if (start && end) {
+    startDate = start;
+    endDate = end;
+  } else {
+    const { start: startRange, end: endRange } = getCalendarRange(year, month);
+    startDate = startRange;
+    endDate = endRange;
+  }
+  const res = await axiosBackendInstance.get(
+    `/books/${bookId}/records?start=${startDate}&end=${endDate}`
+  );
+  return res.data;
+};
