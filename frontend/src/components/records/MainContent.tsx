@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { GroupCategories } from "@/types/category";
 import { MemberQuery } from "@/types/member";
 import { useQuery } from "@tanstack/react-query";
@@ -9,12 +9,12 @@ import { getRecordsByBookIdAndDate } from "@/services/record";
 import { getCalendarRange, parseToDateSlash } from "@/lib/dateUtil";
 import { useParams } from "next/navigation";
 import CalendarViewRecords from "./CalendarViewRecords";
+import axios from "axios";
 
 type Props = {
   categories: GroupCategories;
   members: MemberQuery[];
 };
-
 
 export type MonthRecords = {
   records: GroupRecords;
@@ -27,14 +27,21 @@ export type GroupRecords = {
     data: RecordRes[];
     income: number;
     expense: number;
-  }
+  };
 };
 
-const fetchRecords = async (bookId: string, year: number, month: number) => {
+const fetchRecords = async (
+  bookId: string,
+  year: number,
+  month: number
+): Promise<RecordRes[]> => {
   const { start, end } = getCalendarRange(year, month);
 
-  const res = await getRecordsByBookIdAndDate(bookId, start, end) 
-  return res;
+  const res = await axios.get(
+    `/api/books/${bookId}/records?start=${start}&end=${end}`
+  );
+
+  return res.data;
 };
 
 const filterByMonth = (groupRecords: GroupRecords, month: number) => {
@@ -53,32 +60,34 @@ const filterByMonth = (groupRecords: GroupRecords, month: number) => {
 };
 
 const transformRecords = (data: RecordRes[], currentMonth: number) => {
-  const calendarRecords = data.reduce((acc: GroupRecords, record: RecordRes) => {
-    const date = record.transactionDate;
-    const amount = record.amount;
-    const formatDate = parseToDateSlash(date);
+  const calendarRecords = data.reduce(
+    (acc: GroupRecords, record: RecordRes) => {
+      const date = record.transactionDate;
+      const amount = record.amount;
+      const formatDate = parseToDateSlash(date);
 
-    if (!acc[formatDate]) {
-      acc[formatDate] = { data: [], income: 0, expense: 0 };
-    }
-    acc[formatDate].data.push(record);
-    if (record.type === "IN") {
-      acc[formatDate].income += amount;
-    } else {
-      acc[formatDate].expense += amount;
-    }
-    return acc;
-  }, {});
+      if (!acc[formatDate]) {
+        acc[formatDate] = { data: [], income: 0, expense: 0 };
+      }
+      acc[formatDate].data.push(record);
+      if (record.type === "IN") {
+        acc[formatDate].income += amount;
+      } else {
+        acc[formatDate].expense += amount;
+      }
+      return acc;
+    },
+    {}
+  );
   const listRecords = filterByMonth(calendarRecords, currentMonth);
 
   return { calendarRecords, listRecords, data };
 };
 
 export default function MainContent({ categories, members }: Props) {
-  const params = useParams<{bookId: string}>();
+  const params = useParams<{ bookId: string }>();
   const { bookId } = params;
-  console.log('bookId', bookId);
-  
+
   const [currentDate, setCurrentDate] = useState<DateState>({
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
@@ -124,9 +133,8 @@ export default function MainContent({ categories, members }: Props) {
     isPending,
   } = useQuery({
     queryKey: ["records", currentDate.year, currentDate.month],
-    queryFn: () => fetchRecords(bookId, currentDate.year, currentDate.month),
-    select: (data: RecordRes[]) =>
-      transformRecords(data, currentDate.month),
+    queryFn: () => fetchRecords(bookId, currentDate.year, 5),
+    select: (data: RecordRes[]) => transformRecords(data, currentDate.month),
   });
 
   return (
