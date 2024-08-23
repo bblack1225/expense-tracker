@@ -21,7 +21,7 @@ type Props = {
   members: MemberQuery[];
 };
 
-export default function CalendarViewRecords({
+export default function CalendarViewTable({
   currentDate,
   onDateChange,
   groupRecords,

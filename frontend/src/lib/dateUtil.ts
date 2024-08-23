@@ -1,3 +1,13 @@
+const daysOfWeek = [
+  "星期日",
+  "星期一",
+  "星期二",
+  "星期三",
+  "星期四",
+  "星期五",
+  "星期六",
+];
+
 export const parseToDateSlash = (dateStr: string) => {
   const date = new Date(dateStr);
 
@@ -36,4 +46,9 @@ export const formatToYYYYMMDD = (year: number, month: number, day: number) => {
   const monthStr = String(month).padStart(2, "0");
   const dayStr = String(day).padStart(2, "0");
   return `${year}/${monthStr}/${dayStr}`;
+};
+
+export const getWeekDay = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return daysOfWeek[date.getDay()];
 };

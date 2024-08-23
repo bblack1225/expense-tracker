@@ -4,30 +4,25 @@ import { MemberQuery } from "@/types/member";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DateState, RecordRes } from "@/types/record";
+import {
+  DateState,
+  GroupRecords,
+  MonthRecords,
+  RecordRes,
+} from "@/types/record";
 import { getRecordsByBookIdAndDate } from "@/services/record";
 import { getCalendarRange, parseToDateSlash } from "@/lib/dateUtil";
 import { useParams } from "next/navigation";
-import CalendarViewRecords from "./CalendarViewRecords";
+import CalendarViewTable from "./CalendarViewTable";
 import axios from "axios";
+import ListOverview from "./ListOverview";
+import ListViewTable from "./ListViewTable";
+import DatePickerBar from "./DatePickerBar";
+import { Button } from "../ui/button";
 
 type Props = {
   categories: GroupCategories;
   members: MemberQuery[];
-};
-
-export type MonthRecords = {
-  records: GroupRecords;
-  income: number;
-  expense: number;
-};
-
-export type GroupRecords = {
-  [key: string]: {
-    data: RecordRes[];
-    income: number;
-    expense: number;
-  };
 };
 
 const fetchRecords = async (
@@ -138,56 +133,67 @@ export default function MainContent({ categories, members }: Props) {
   });
 
   return (
-    <Tabs defaultValue="list" className="w-full mt-2 ">
-      <div className="px-3">
-        <TabsList className="grid w-full grid-cols-2 ">
-          <TabsTrigger value="list">清單</TabsTrigger>
-          <TabsTrigger value="calendar">行事曆</TabsTrigger>
-        </TabsList>
+    <>
+      <div className="flex items-center justify-between px-3">
+        <h1 className="text-2xl font-bold">收支紀錄</h1>
+        <Button
+          // href="/records/create"
+          className="bg-primary	py-1 text-white font-bold rounded-lg px-4 hover:bg-slate-950 shadow-md"
+        >
+          新增紀錄
+        </Button>
       </div>
-      {/* <DatePickerBar
-        onDateChange={handleDateChange}
-        onYearChange={handleYearChange}
-        currentDate={currentDate}
-      /> */}
-      {isPending ? (
-        <div className="flex justify-center items-center h-50 font-extrabold text-xl">
-          載入中...
+      <Tabs defaultValue="list" className="w-full mt-2 ">
+        <div className="px-3">
+          <TabsList className="grid w-full grid-cols-2 ">
+            <TabsTrigger value="list">清單</TabsTrigger>
+            <TabsTrigger value="calendar">行事曆</TabsTrigger>
+          </TabsList>
         </div>
-      ) : (
-        <>
-          <TabsContent value="list">
-            <div className="px-3">
-              {/* <ListOverview
-                income={records.listRecords.income}
-                expense={records.listRecords.expense}
-              /> */}
-              {Object.keys(records.listRecords.records).length === 0 ? (
-                <p className="text-slate-500 font-bold">
-                  沒有資料。點擊右上角新增紀錄。
-                </p>
-              ) : (
-                <>
-                  {/* <ListViewTable
-                    groupRecords={records.listRecords.records}
-                    categories={categories}
-                    members={members}
-                  /> */}
-                </>
-              )}
-            </div>
-          </TabsContent>
-          <TabsContent value="calendar">
-            <CalendarViewRecords
-              currentDate={currentDate}
-              onDateChange={handleDateChange}
-              groupRecords={records.calendarRecords}
-              categories={categories}
-              members={members}
-            />
-          </TabsContent>
-        </>
-      )}
-    </Tabs>
+        <DatePickerBar
+          onDateChange={handleDateChange}
+          onYearChange={handleYearChange}
+          currentDate={currentDate}
+        />
+        {isPending ? (
+          <div className="flex justify-center items-center h-50 font-extrabold text-xl">
+            載入中...
+          </div>
+        ) : (
+          <>
+            <TabsContent value="list">
+              <div className="px-3">
+                <ListOverview
+                  income={records.listRecords.income}
+                  expense={records.listRecords.expense}
+                />
+                {Object.keys(records.listRecords.records).length === 0 ? (
+                  <p className="text-slate-500 font-bold">
+                    沒有資料。點擊右上角新增紀錄。
+                  </p>
+                ) : (
+                  <>
+                    <ListViewTable
+                      groupRecords={records.listRecords.records}
+                      categories={categories}
+                      members={members}
+                    />
+                  </>
+                )}
+              </div>
+            </TabsContent>
+            <TabsContent value="calendar">
+              <CalendarViewTable
+                currentDate={currentDate}
+                onDateChange={handleDateChange}
+                groupRecords={records.calendarRecords}
+                categories={categories}
+                members={members}
+              />
+            </TabsContent>
+          </>
+        )}
+      </Tabs>
+    </>
   );
 }
