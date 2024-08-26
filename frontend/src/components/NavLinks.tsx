@@ -2,7 +2,7 @@
 import clsx from "clsx";
 import { MessageCircleMore, NotebookPen, Users, House } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 
 const links = [
   { name: "概觀", href: "/overview", icon: House },
@@ -18,18 +18,20 @@ type Props = {
 export default function NavLinks({ onNavChange }: Props) {
   const pathname = usePathname();
   const router = useRouter();
+  const { bookId } = useParams();
 
   return (
     <>
       {links.map((link) => {
         const LinkIcon = link.icon;
+        const linkPath = `/${bookId}${link.href}`;
         return (
           <Link
             key={link.name}
-            href={link.href}
+            href={linkPath}
             className={clsx(
               `flex h-[48px] grow items-center justify-center gap-2 rounded-md p-3 text-sm  font-medium hover:bg-gray-200   hover:text-black md:flex-none md:justify-start md:p-2 md:px-3`,
-              pathname === link.href
+              pathname === linkPath
                 ? "bg-gray-200 text-black"
                 : "bg-gray-50 text-slate-500"
             )}

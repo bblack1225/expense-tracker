@@ -19,6 +19,7 @@ import ListOverview from "./ListOverview";
 import ListViewTable from "./ListViewTable";
 import DatePickerBar from "./DatePickerBar";
 import { Button } from "../ui/button";
+import CreateForm from "./CreateForm";
 
 type Props = {
   categories: GroupCategories;
@@ -88,6 +89,8 @@ export default function MainContent({ categories, members }: Props) {
     month: new Date().getMonth() + 1,
     day: new Date().getDate(),
   });
+  const [isCreateSheetOpen, setIsCreateSheetOpen] = useState(false);
+
   const handleDateChange = (monthVal: number, dayVal?: number) => {
     let newMonth;
     let newYear;
@@ -137,8 +140,8 @@ export default function MainContent({ categories, members }: Props) {
       <div className="flex items-center justify-between px-3">
         <h1 className="text-2xl font-bold">收支紀錄</h1>
         <Button
-          // href="/records/create"
           className="bg-primary	py-1 text-white font-bold rounded-lg px-4 hover:bg-slate-950 shadow-md"
+          onClick={() => setIsCreateSheetOpen(true)}
         >
           新增紀錄
         </Button>
@@ -194,6 +197,12 @@ export default function MainContent({ categories, members }: Props) {
           </>
         )}
       </Tabs>
+      <CreateForm
+        categories={categories}
+        members={members}
+        isOpen={isCreateSheetOpen}
+        setIsOpen={setIsCreateSheetOpen}
+      />
     </>
   );
 }
