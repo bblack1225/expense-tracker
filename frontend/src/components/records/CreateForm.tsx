@@ -44,13 +44,23 @@ export default function CreateForm({
   setIsOpen,
 }: Props) {
   const { inCategories, outCategories } = categories;
-  const {
-    control,
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<RecordFormInput>({
+  //   const {
+  //     control,
+  //     register,
+  //     handleSubmit,
+  //     reset,
+  //     formState: { errors },
+  //   } = useForm<RecordFormInput>({
+  //     resolver: zodResolver(RecordFormSchema),
+  //     defaultValues: {
+  //       transactionDate: new Date().toISOString().split("T")[0],
+  //       category: "",
+  //       member: "",
+  //       amount: "",
+  //       description: "",
+  //     },
+  //   });
+  const form = useForm<RecordFormInput>({
     resolver: zodResolver(RecordFormSchema),
     defaultValues: {
       transactionDate: new Date().toISOString().split("T")[0],
@@ -79,10 +89,10 @@ export default function CreateForm({
     console.log(data);
   };
   return (
-    <Form>
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <Form {...form}>
         {/* <SheetTrigger>Open</SheetTrigger> */}
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <SheetContent
             className="w-full sm:w-[540px] px-0 py-1"
             enableDefaultClose={false}
@@ -96,7 +106,7 @@ export default function CreateForm({
                 size={"icon"}
                 onClick={() => {
                   setIsOpen(false);
-                  reset();
+                  form.reset();
                 }}
               >
                 <X size={24} />
@@ -135,7 +145,7 @@ export default function CreateForm({
                     日期
                   </label>
                   <input
-                    {...register("transactionDate")}
+                    {...form.register("transactionDate")}
                     placeholder="選擇日期"
                     type="date"
                     id="date"
@@ -146,14 +156,48 @@ export default function CreateForm({
                     }}
                   />
                   <div id="date-error" aria-live="polite" aria-atomic="true">
-                    {errors?.transactionDate?.message && (
+                    {form.formState.errors?.transactionDate?.message && (
                       <p className="mt-2 text-sm text-red-500 font-bold">
-                        {errors.transactionDate.message}
+                        {form.formState.errors.transactionDate.message}
                       </p>
                     )}
                   </div>
                 </div>
-                <div>
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {recordType === "IN" ? "收入類別" : "支出類別"}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className="focus-visible:ring-0 focus:bg-slate-300 w-full"
+                          id="category"
+                          placeholder={
+                            recordType === "IN"
+                              ? "選擇收入類別"
+                              : "選擇支出類別"
+                          }
+                          type="text"
+                          readOnly
+                          value={selectedCategory.name}
+                          onClick={() => setIsCategoryDrawerOpen(true)}
+                        />
+                      </FormControl>
+                      <CategoryDialog
+                        open={isCategoryDrawerOpen}
+                        onClose={setIsCategoryDrawerOpen}
+                        categories={currentCategories}
+                        onSelectCategory={handleCategorySelect}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* <div>
                   <label
                     htmlFor="category"
                     className="text-xl sm:text-lg font-medium"
@@ -182,6 +226,7 @@ export default function CreateForm({
                       categories={currentCategories}
                       onSelectCategory={handleCategorySelect}
                     />
+
                     <div
                       id="category-error"
                       aria-live="polite"
@@ -194,7 +239,7 @@ export default function CreateForm({
                       )}
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div>
                   <label
                     htmlFor="amount"
@@ -204,20 +249,20 @@ export default function CreateForm({
                   </label>
                   <Input
                     type="text"
-                    {...register("amount")}
+                    {...form.register("amount")}
                     inputMode="numeric"
                     id="amount"
                     className="mt-1 block w-full px-3 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 text-xl sm:text-lg"
                   />
                   <div id="amount-error" aria-live="polite" aria-atomic="true">
-                    {errors?.amount?.message && (
+                    {form.formState.errors?.amount?.message && (
                       <p className="mt-2 text-sm text-red-500 font-bold">
-                        {errors.amount.message}
+                        {form.formState.errors.amount.message}
                       </p>
                     )}
                   </div>
                 </div>
-                <div>
+                {/* <div>
                   <label
                     htmlFor="member"
                     className="text-xl sm:text-lg font-medium"
@@ -226,7 +271,7 @@ export default function CreateForm({
                   </label>
                   <Controller
                     name="member"
-                    control={control}
+                    control={form.control}
                     render={({ field }) => (
                       <Select {...field} onValueChange={field.onChange}>
                         <SelectGroup className="mt-1">
@@ -246,13 +291,13 @@ export default function CreateForm({
                   />
 
                   <div id="member-error" aria-live="polite" aria-atomic="true">
-                    {errors?.member?.message && (
+                    {form.formState.errors?.member?.message && (
                       <p className="mt-2 text-sm text-red-500 font-bold">
-                        {errors.member.message}
+                        {form.formState.errors.member.message}
                       </p>
                     )}
                   </div>
-                </div>
+                </div> */}
                 <div>
                   <label
                     htmlFor="description"
@@ -276,12 +321,12 @@ export default function CreateForm({
                   取消
                 </Button>
                 {/* <SubmitButton text="儲存" /> */}
-                <Button onClick={handleSubmit(onSubmit)}>儲存</Button>
+                <Button onClick={form.handleSubmit(onSubmit)}>儲存</Button>
               </div>
             </div>
           </SheetContent>
         </form>
-      </Sheet>
-    </Form>
+      </Form>
+    </Sheet>
   );
 }
