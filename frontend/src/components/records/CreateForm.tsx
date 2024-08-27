@@ -36,18 +36,28 @@ import CategoryDialog from "./CategoryDialog";
 import { Textarea } from "../ui/textarea";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { ScrollArea } from "../ui/scroll-area";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CreateRecordRequest } from "@/types/record";
+import axios from "axios";
 type Props = {
   categories: GroupCategories;
   members: MemberQuery[];
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
+  bookId: string;
 };
+
+async function createRecord(data: CreateRecordRequest) {
+  const res = await axios.post("/api/records", data);
+  return res.data;
+}
 
 export default function CreateForm({
   categories,
   members,
   isOpen,
   setIsOpen,
+  bookId,
 }: Props) {
   const { inCategories, outCategories } = categories;
   const form = useForm<RecordFormInput>({
@@ -60,6 +70,7 @@ export default function CreateForm({
       description: "",
     },
   });
+  const queryClient = useQueryClient();
   const [recordType, setRecordType] = useState<"IN" | "OUT">("OUT");
   const currentCategories = recordType === "IN" ? inCategories : outCategories;
   const [selectedCategory, setSelectedCategory] = useState({
@@ -78,8 +89,27 @@ export default function CreateForm({
     setIsCategoryDrawerOpen(false);
   };
 
+  const mutation = useMutation({
+    mutationFn: (data: CreateRecordRequest) => createRecord(data),
+    onSuccess: () => {
+      setIsOpen(false);
+      setSelectedCategory({ name: "", id: "" });
+      form.reset();
+      // queryClient.invalidateQueries({ queryKey: ["records"] });
+    },
+  });
+
   const onSubmit = (data: RecordFormInput) => {
-    console.log(data);
+    const payload = {
+      memberId: data.member,
+      amount: Number(data.amount),
+      description: data.description,
+      transactionDate: data.transactionDate,
+      bookId,
+      type: recordType,
+      categoryId: selectedCategory.id,
+    };
+    mutation.mutate(payload);
   };
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>

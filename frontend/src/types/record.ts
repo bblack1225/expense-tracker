@@ -28,3 +28,13 @@ export type MonthRecords = {
   income: number;
   expense: number;
 };
+
+export type CreateRecordRequest = {
+  amount: number;
+  transactionDate: string;
+  description: string;
+  categoryId: string;
+  memberId: string;
+  bookId: string;
+  type: "IN" | "OUT";
+};

@@ -1,4 +1,4 @@
-import { RecordRes } from "@/types/record";
+import { CreateRecordRequest, RecordRes } from "@/types/record";
 import axiosBackendInstance from "./axiosInstance";
 import { getCalendarRange } from "@/lib/dateUtil";
 
@@ -23,5 +23,10 @@ export const getRecordsByBookIdAndDate = async (
   const res = await axiosBackendInstance.get(
     `/books/${bookId}/records?start=${startDate}&end=${endDate}`
   );
+  return res.data;
+};
+
+export const createRecord = async (data: CreateRecordRequest) => {
+  const res = await axiosBackendInstance.post(`/records`, data);
   return res.data;
 };

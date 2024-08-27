@@ -198,6 +198,7 @@ export default function MainContent({ categories, members }: Props) {
         )}
       </Tabs>
       <CreateForm
+        bookId={bookId}
         categories={categories}
         members={members}
         isOpen={isCreateSheetOpen}
