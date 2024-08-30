@@ -1,4 +1,3 @@
-"use client";
 import { RecordFormInput, RecordFormSchema } from "@/schema/recordSchema";
 import { CategoryRes, GroupCategories } from "@/types/category";
 import { MemberQuery } from "@/types/member";
