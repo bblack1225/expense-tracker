@@ -131,7 +131,7 @@ export default function MainContent({ categories, members }: Props) {
     isPending,
   } = useQuery({
     queryKey: ["records", currentDate.year, currentDate.month],
-    queryFn: () => fetchRecords(bookId, currentDate.year, 5),
+    queryFn: () => fetchRecords(bookId, currentDate.year, currentDate.month),
     select: (data: RecordRes[]) => transformRecords(data, currentDate.month),
   });
 

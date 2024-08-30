@@ -1,6 +1,5 @@
 import { createRecord, getRecordsByBookIdAndDate } from "@/services/record";
 import { NextRequest } from "next/server";
-import { log } from "node:console";
 
 export async function GET(
   request: NextRequest,
@@ -21,7 +20,6 @@ export async function POST(
 ) {
   // const bookId = params.bookId;
   const data = await request.json();
-  console.log("data", data);
 
   const res = await createRecord(data);
 

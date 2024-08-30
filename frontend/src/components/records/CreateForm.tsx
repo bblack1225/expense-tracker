@@ -12,13 +12,12 @@ import {
   SheetTitle,
 } from "../ui/sheet";
 import { Button } from "../ui/button";
-import { X } from "lucide-react";
+import { RefreshCw, X } from "lucide-react";
 import clsx from "clsx";
 import { useState } from "react";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -48,7 +47,7 @@ type Props = {
 };
 
 async function createRecord(data: CreateRecordRequest) {
-  const res = await axios.post("/api/records", data);
+  const res = await axios.post(`/api/books/${data.bookId}/records`, data);
   return res.data;
 }
 
@@ -89,17 +88,18 @@ export default function CreateForm({
     setIsCategoryDrawerOpen(false);
   };
 
-  const mutation = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (data: CreateRecordRequest) => createRecord(data),
     onSuccess: () => {
       setIsOpen(false);
       setSelectedCategory({ name: "", id: "" });
       form.reset();
-      // queryClient.invalidateQueries({ queryKey: ["records"] });
+
+      queryClient.invalidateQueries({ queryKey: ["records"] });
     },
   });
 
-  const onSubmit = (data: RecordFormInput) => {
+  const onSubmit = async (data: RecordFormInput) => {
     const payload = {
       memberId: data.member,
       amount: Number(data.amount),
@@ -109,7 +109,7 @@ export default function CreateForm({
       type: recordType,
       categoryId: selectedCategory.id,
     };
-    mutation.mutate(payload);
+    mutate(payload);
   };
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -139,7 +139,7 @@ export default function CreateForm({
                 >
                   <X size={24} />
                 </Button>
-                {/* <div>新增收支紀錄</div> */}
+                <div className="p-2">新增收支紀錄</div>
                 <div className="flex bg-muted rounded-lg p-1 mt-0">
                   <button
                     className={clsx(
@@ -304,7 +304,15 @@ export default function CreateForm({
                   >
                     取消
                   </Button>
-                  <Button onClick={form.handleSubmit(onSubmit)}>儲存</Button>
+                  <Button
+                    onClick={form.handleSubmit(onSubmit)}
+                    disabled={isPending}
+                  >
+                    {isPending ? (
+                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    ) : null}
+                    儲存
+                  </Button>
                 </div>
               </div>
             </ScrollArea>
