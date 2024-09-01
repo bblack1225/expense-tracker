@@ -24,6 +24,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import EditForm from "./EditForm";
+
 // import EditForm from "./editForm";
 
 type Props = {
@@ -59,8 +61,6 @@ export default function RecordItem({
   );
   const memberName = getMemberNameById(members, item.memberId);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState(item.type);
-
   return (
     <>
       <div
@@ -109,51 +109,13 @@ export default function RecordItem({
           </div>
         </div>
       </div>
-      <Sheet open={isEditing} onOpenChange={setIsEditing}>
-        {/* <SheetTrigger>Open</SheetTrigger> */}
-        <SheetContent
-          className="w-full sm:w-[540px] px-0 py-1"
-          enableDefaultClose={false}
-        >
-          <SheetHeader className="flex flex-row justify-between items-center pr-2  py-1">
-            <Button
-              variant={"ghost"}
-              size={"icon"}
-              onClick={() => setIsEditing(false)}
-            >
-              <X size={24} />
-            </Button>
-            <div className="flex bg-muted rounded-lg p-1 mt-0">
-              <button
-                className={clsx(
-                  "px-6 py-2 rounded-lg font-medium text-sm",
-                  activeTab === "OUT" ? "bg-background" : "bg-transparent"
-                )}
-                onClick={() => setActiveTab("OUT")}
-              >
-                支出
-              </button>
-              <button
-                className={clsx(
-                  "px-6 py-2 rounded-lg font-medium text-sm",
-                  activeTab === "IN" ? "bg-background" : "bg-transparent"
-                )}
-                onClick={() => setActiveTab("IN")}
-              >
-                收入
-              </button>
-            </div>
-            <Button variant={"ghost"} size={"icon"}>
-              <Trash2 />
-            </Button>
-          </SheetHeader>
-          {/* <EditForm
-            item={item}
-            categories={item.type === "IN" ? inCategories : outCategories}
-            members={members}
-          /> */}
-        </SheetContent>
-      </Sheet>
+      <EditForm
+        item={item}
+        categories={categories}
+        members={members}
+        isOpen={isEditing}
+        setIsOpen={setIsEditing}
+      />
     </>
   );
 }

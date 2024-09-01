@@ -138,7 +138,7 @@ export default function CreateForm({
                 >
                   <X size={24} />
                 </Button>
-                <div className="p-2">新增收支紀錄</div>
+                {/* <div className="p-2">新增收支紀錄</div> */}
                 <div className="flex bg-muted rounded-lg p-1 mt-0">
                   <button
                     className={clsx(
@@ -159,13 +159,6 @@ export default function CreateForm({
                     收入
                   </button>
                 </div>
-                {/* <Button
-                variant={"default"}
-                size={"default"}
-                onClick={form.handleSubmit(onSubmit)}
-              >
-                儲存
-              </Button> */}
               </SheetHeader>
               <div className="rounded-md bg-card p-4 md:p-6 ">
                 <div className="flex flex-col gap-4 ">
