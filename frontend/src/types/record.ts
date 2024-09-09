@@ -38,3 +38,7 @@ export type CreateRecordRequest = {
   bookId: string;
   type: "IN" | "OUT";
 };
+
+export type UpdateRecordRequest = {
+  
+}

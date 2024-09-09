@@ -26,6 +26,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RecordFormInput, RecordFormSchema } from "@/schema/recordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 type Props = {
   categories: GroupCategories;
   members: MemberQuery[];
@@ -40,6 +41,8 @@ export default function EditForm({
   isOpen,
   setIsOpen,
 }: Props) {
+  const [recordType, setRecordType] = useState<"IN" | "OUT">(item.type);
+
   const form = useForm<RecordFormInput>({
     resolver: zodResolver(RecordFormSchema),
     defaultValues: {
@@ -50,7 +53,17 @@ export default function EditForm({
       description: "",
     },
   });
-  const [recordType, setRecordType] = useState<"IN" | "OUT">(item.type);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: CreateRecordRequest) => createRecord(data),
+    onSuccess: () => {
+      setIsOpen(false);
+      setSelectedCategory({ name: "", id: "" });
+      form.reset();
+
+      queryClient.invalidateQueries({ queryKey: ["records"] });
+    },
+  });
 
   const onSubmit = async (data: RecordFormInput) => {
     const payload = {
@@ -64,6 +77,7 @@ export default function EditForm({
     };
     mutate(payload);
   };
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent

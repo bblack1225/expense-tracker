@@ -1,7 +1,8 @@
 package com.blake.expensetrackerbackend.controller;
 
 import com.blake.expensetrackerbackend.model.request.CreateRecordRequest;
-import com.blake.expensetrackerbackend.model.response.CreateRecordResponse;
+import com.blake.expensetrackerbackend.model.request.UpdateRecordRequest;
+import com.blake.expensetrackerbackend.model.response.MutateRecordResponse;
 import com.blake.expensetrackerbackend.model.response.QueryAllRecordResponse;
 import com.blake.expensetrackerbackend.service.api.RecordApiService;
 import jakarta.validation.Valid;
@@ -24,13 +25,13 @@ public class RecordController {
     }
 
     @PostMapping
-    public CreateRecordResponse createRecord(@Valid @RequestBody CreateRecordRequest request) {
+    public MutateRecordResponse createRecord(@Valid @RequestBody CreateRecordRequest request) {
         return recordService.createRecord(request);
     }
 
-    @PutMapping("/{id}")
-    public void updateRecord(@PathVariable Long id){
-        System.out.println("Update record with id: " + id);
+    @PutMapping("/{recordId}")
+    public MutateRecordResponse updateRecord(@PathVariable String recordId, @RequestBody UpdateRecordRequest request){
+        return recordService.updateRecord(recordId, request);
     }
 
     @DeleteMapping("/{id}")

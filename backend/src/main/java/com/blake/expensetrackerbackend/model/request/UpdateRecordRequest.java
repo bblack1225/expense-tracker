@@ -8,9 +8,6 @@ import lombok.Data;
 @Data
 public class UpdateRecordRequest {
 
-    @NotBlank
-    private String recordId;
-
     @NotNull
     private Integer amount;
 

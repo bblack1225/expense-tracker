@@ -4,7 +4,7 @@ import com.blake.expensetrackerbackend.enums.TransactionRecordType;
 import com.blake.expensetrackerbackend.exception.ServiceException;
 import com.blake.expensetrackerbackend.model.entity.TransactionRecord;
 import com.blake.expensetrackerbackend.model.request.CreateRecordRequest;
-import com.blake.expensetrackerbackend.model.response.CreateRecordResponse;
+import com.blake.expensetrackerbackend.model.response.MutateRecordResponse;
 import com.blake.expensetrackerbackend.repository.TransactionRecordRepository;
 import com.blake.expensetrackerbackend.service.internal.BookInternalService;
 import com.blake.expensetrackerbackend.service.internal.CategoryInternalService;
@@ -68,7 +68,7 @@ class RecordApiServiceImplTest {
         when(recordRepository.save(any(TransactionRecord.class))).thenReturn(savedRecord);
 
         // When
-        CreateRecordResponse response = recordService.createRecord(request);
+        MutateRecordResponse response = recordService.createRecord(request);
 
         // Then
         assertNotNull(response);

@@ -3,7 +3,8 @@ package com.blake.expensetrackerbackend.service.api.impl;
 import com.blake.expensetrackerbackend.exception.ServiceException;
 import com.blake.expensetrackerbackend.model.entity.TransactionRecord;
 import com.blake.expensetrackerbackend.model.request.CreateRecordRequest;
-import com.blake.expensetrackerbackend.model.response.CreateRecordResponse;
+import com.blake.expensetrackerbackend.model.request.UpdateRecordRequest;
+import com.blake.expensetrackerbackend.model.response.MutateRecordResponse;
 import com.blake.expensetrackerbackend.model.response.QueryAllRecordResponse;
 import com.blake.expensetrackerbackend.repository.TransactionRecordRepository;
 import com.blake.expensetrackerbackend.service.api.RecordApiService;
@@ -32,7 +33,7 @@ public class RecordApiServiceImpl implements RecordApiService {
     private final TransactionRecordRepository recordRepository;
 
     @Override
-    public CreateRecordResponse createRecord(CreateRecordRequest request) {
+    public MutateRecordResponse createRecord(CreateRecordRequest request) {
 
         String bookId = request.getBookId();
         String memberId = request.getMemberId();
@@ -61,7 +62,7 @@ public class RecordApiServiceImpl implements RecordApiService {
         transactionRecord.setBookId(bookId);
         transactionRecord.setType(request.getType());
         transactionRecord = recordRepository.save(transactionRecord);
-        return new CreateRecordResponse(
+        return new MutateRecordResponse(
                 transactionRecord.getId(),
                 transactionRecord.getAmount(),
                 request.getTransactionDate(),
@@ -89,5 +90,10 @@ public class RecordApiServiceImpl implements RecordApiService {
                         transactionRecord.getType()
                 )
         ).toList();
+    }
+
+    @Override
+    public MutateRecordResponse updateRecord(String recordId, UpdateRecordRequest request) {
+        return null;
     }
 }

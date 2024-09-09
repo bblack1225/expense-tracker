@@ -1,6 +1,6 @@
 package com.blake.expensetrackerbackend.model.response;
 
-public record CreateRecordResponse(
+public record MutateRecordResponse(
         String id,
         Integer amount,
         String transactionDate,
