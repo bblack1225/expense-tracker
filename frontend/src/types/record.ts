@@ -29,7 +29,7 @@ export type MonthRecords = {
   expense: number;
 };
 
-export type CreateRecordRequest = {
+export type MutateRecordRequest = {
   amount: number;
   transactionDate: string;
   description: string;
@@ -38,7 +38,3 @@ export type CreateRecordRequest = {
   bookId: string;
   type: "IN" | "OUT";
 };
-
-export type UpdateRecordRequest = {
-  
-}

@@ -1,5 +1,6 @@
 package com.blake.expensetrackerbackend.service.api.impl;
 
+import com.blake.expensetrackerbackend.enums.TransactionRecordType;
 import com.blake.expensetrackerbackend.exception.ServiceException;
 import com.blake.expensetrackerbackend.model.entity.TransactionRecord;
 import com.blake.expensetrackerbackend.model.request.CreateRecordRequest;
@@ -16,6 +17,7 @@ import com.github.shamil.Xid;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -35,22 +37,16 @@ public class RecordApiServiceImpl implements RecordApiService {
     @Override
     public MutateRecordResponse createRecord(CreateRecordRequest request) {
 
-        String bookId = request.getBookId();
-        String memberId = request.getMemberId();
-        String categoryId = request.getCategoryId();
-        if(!bookInternalService.isAccountingBookExists(bookId)){
-            throw new ServiceException("Book not found");
-        }
+        val bookId = request.getBookId();
+        val memberId = request.getMemberId();
+        val categoryId = request.getCategoryId();
+        val transactionRecordType = request.getType();
 
-        if(!memberInternalService.isMemberExists(memberId)){
-            throw new ServiceException("Member not found");
-        }
+        validateBookExists(bookId);
+        validateMemberExists(memberId);
+        validateCategoryMatchTransactionType(categoryId, transactionRecordType);
 
-        if(!categoryInternalService.isCategoryMatchTransactionType(categoryId, request.getType())){
-            throw new ServiceException("Category Not Match Transaction Type");
-        }
-
-        TransactionRecord transactionRecord = new TransactionRecord();
+        var transactionRecord = new TransactionRecord();
         String id = Xid.string();
         transactionRecord.setId(id);
         transactionRecord.setAmount(request.getAmount());
@@ -60,7 +56,7 @@ public class RecordApiServiceImpl implements RecordApiService {
         transactionRecord.setCategoryId(categoryId);
         transactionRecord.setMemberId(memberId);
         transactionRecord.setBookId(bookId);
-        transactionRecord.setType(request.getType());
+        transactionRecord.setType(transactionRecordType);
         transactionRecord = recordRepository.save(transactionRecord);
         return new MutateRecordResponse(
                 transactionRecord.getId(),
@@ -94,6 +90,53 @@ public class RecordApiServiceImpl implements RecordApiService {
 
     @Override
     public MutateRecordResponse updateRecord(String recordId, UpdateRecordRequest request) {
-        return null;
+        val bookId = request.getBookId();
+        val memberId = request.getMemberId();
+        val categoryId = request.getCategoryId();
+        val transactionRecordType = request.getType();
+
+        validateBookExists(bookId);
+        validateMemberExists(memberId);
+        validateCategoryMatchTransactionType(categoryId, transactionRecordType);
+
+        val existingRecord = recordRepository
+                .findById(recordId)
+                .orElseThrow(() -> new ServiceException("Record not found"));
+        existingRecord.setAmount(request.getAmount());
+        existingRecord.setTransactionDate(DateUtil.parseDate(request.getTransactionDate()));
+        existingRecord.setDescription(request.getDescription());
+        existingRecord.setCategoryId(categoryId);
+        existingRecord.setMemberId(memberId);
+        existingRecord.setType(transactionRecordType);
+        recordRepository.save(existingRecord);
+
+        return new MutateRecordResponse(
+                existingRecord.getId(),
+                existingRecord.getAmount(),
+                request.getTransactionDate(),
+                existingRecord.getDescription(),
+                existingRecord.getCategoryId(),
+                existingRecord.getMemberId(),
+                existingRecord.getBookId(),
+                existingRecord.getType().name()
+        );
+    }
+
+    private void validateBookExists(String bookId) {
+        if (!bookInternalService.isAccountingBookExists(bookId)) {
+            throw new ServiceException("Book not found");
+        }
+    }
+
+    private void validateMemberExists(String memberId) {
+        if (!memberInternalService.isMemberExists(memberId)) {
+            throw new ServiceException("Member not found");
+        }
+    }
+
+    private void validateCategoryMatchTransactionType(String categoryId, TransactionRecordType type) {
+        if (!categoryInternalService.isCategoryMatchTransactionType(categoryId, type)) {
+            throw new ServiceException("Category Not Match Transaction Type");
+        }
     }
 }

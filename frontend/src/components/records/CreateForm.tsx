@@ -35,7 +35,7 @@ import { Textarea } from "../ui/textarea";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { ScrollArea } from "../ui/scroll-area";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CreateRecordRequest } from "@/types/record";
+import { MutateRecordRequest } from "@/types/record";
 import axios from "axios";
 type Props = {
   categories: GroupCategories;
@@ -45,7 +45,7 @@ type Props = {
   bookId: string;
 };
 
-async function createRecord(data: CreateRecordRequest) {
+async function createRecord(data: MutateRecordRequest) {
   const res = await axios.post(`/api/books/${data.bookId}/records`, data);
   return res.data;
 }
@@ -88,7 +88,7 @@ export default function CreateForm({
   };
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: CreateRecordRequest) => createRecord(data),
+    mutationFn: (data: MutateRecordRequest) => createRecord(data),
     onSuccess: () => {
       setIsOpen(false);
       setSelectedCategory({ name: "", id: "" });

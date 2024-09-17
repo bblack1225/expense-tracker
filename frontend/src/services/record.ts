@@ -1,6 +1,7 @@
-import { CreateRecordRequest, RecordRes } from "@/types/record";
+import { MutateRecordRequest, RecordRes } from "@/types/record";
 import axiosBackendInstance from "./axiosInstance";
 import { getCalendarRange } from "@/lib/dateUtil";
+import axios from "axios";
 
 export const getRecordsByBookIdAndDate = async (
   bookId: string,
@@ -26,7 +27,15 @@ export const getRecordsByBookIdAndDate = async (
   return res.data;
 };
 
-export const createRecord = async (data: CreateRecordRequest) => {
+export const createRecord = async (data: MutateRecordRequest) => {
   const res = await axiosBackendInstance.post(`/records`, data);
+  return res.data;
+};
+
+export const updateRecord = async (
+  recordId: string,
+  data: MutateRecordRequest
+) => {
+  const res = await axiosBackendInstance.put(`/records/${recordId}`, data);
   return res.data;
 };

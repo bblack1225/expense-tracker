@@ -3,6 +3,7 @@ import { z } from "zod";
 export const RecordFormSchema = z.object({
   transactionDate: z.string().min(1, { message: "請選擇日期" }),
   category: z.string().min(1, { message: "請選擇類別" }),
+  // 因為預設值想要設為空字串而不是0，所以使用string
   amount: z
     .string()
     .min(1, { message: "金額不得為空" })
