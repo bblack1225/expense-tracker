@@ -45,10 +45,17 @@ type Props = {
   setIsOpen: (value: boolean) => void;
 };
 
-async function updateRecord(recordId: string, data: MutateRecordRequest) {
+async function updateRecord(
+  recordId: string,
+  data: MutateRecordRequest
+): Promise<RecordRes> {
   const res = await axios.put(`/api/records/${recordId}`, data);
   return res.data;
 }
+
+const findCategory = (categories: CategoryRes[], categoryId: string) => {
+  return categories.find((category) => category.id === categoryId) || null;
+};
 
 export default function EditForm({
   categories,
@@ -60,14 +67,11 @@ export default function EditForm({
   const { inCategories, outCategories } = categories;
   const currentCategories = item.type === "IN" ? inCategories : outCategories;
   const [recordType, setRecordType] = useState<"IN" | "OUT">(item.type);
-  const initialCategory = currentCategories.find(
-    (category) => category.id === item.categoryId
-  );
+  const initialCategory = findCategory(currentCategories, item.categoryId);
   const [selectedCategory, setSelectedCategory] = useState({
     name: initialCategory?.name || "",
     id: initialCategory?.id || "",
   });
-  console.log("selectedCategory", selectedCategory);
 
   const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -95,11 +99,20 @@ export default function EditForm({
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: MutateRecordRequest) => updateRecord(item.id, data),
-    onSuccess: () => {
+    onSuccess: (updateRecord) => {
       setIsOpen(false);
-      setSelectedCategory({ name: "", id: "" });
-      form.reset();
-
+      const category = findCategory(
+        currentCategories,
+        updateRecord.categoryId
+      ) as CategoryRes;
+      setSelectedCategory({ name: category.name, id: category.id });
+      form.reset({
+        transactionDate: updateRecord.transactionDate,
+        category: category.name,
+        member: updateRecord.memberId,
+        amount: updateRecord.amount.toString(),
+        description: updateRecord.description,
+      });
       queryClient.invalidateQueries({ queryKey: ["records"] });
     },
   });
@@ -117,13 +130,27 @@ export default function EditForm({
     mutate(payload);
   };
 
+  const handleClose = () => {
+    setIsOpen(false);
+    form.reset();
+  };
+
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+    <Sheet
+      open={isOpen}
+      onOpenChange={(val) => {
+        setIsOpen(val);
+        if (!val) {
+          form.reset();
+        }
+      }}
+    >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <SheetContent
             className="w-full sm:w-[540px] px-0 py-1"
-            enableDefaultClose={false}
+            // 自己定義的屬性，是否需要啟用預設的關閉按鈕
+            enableDefaultCloseBtn={false}
           >
             <VisuallyHidden.Root>
               <SheetTitle />
@@ -132,11 +159,7 @@ export default function EditForm({
               <SheetDescription />
             </VisuallyHidden.Root>
             <SheetHeader className="flex flex-row justify-between items-center pr-2  py-1">
-              <Button
-                variant={"ghost"}
-                size={"icon"}
-                onClick={() => setIsOpen(false)}
-              >
+              <Button variant={"ghost"} size={"icon"} onClick={handleClose}>
                 <X size={24} />
               </Button>
               <div className="flex bg-muted rounded-lg p-1 mt-0">
@@ -295,7 +318,7 @@ export default function EditForm({
               <div className="flex justify-end mt-3 gap-5">
                 <Button
                   className="flex h-10 items-center bg-primary text-white px-4 rounded-lg"
-                  onClick={() => setIsOpen(false)}
+                  onClick={handleClose}
                 >
                   取消
                 </Button>

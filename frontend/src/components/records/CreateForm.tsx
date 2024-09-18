@@ -35,7 +35,7 @@ import { Textarea } from "../ui/textarea";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { ScrollArea } from "../ui/scroll-area";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { MutateRecordRequest } from "@/types/record";
+import { MutateRecordRequest, RecordRes } from "@/types/record";
 import axios from "axios";
 type Props = {
   categories: GroupCategories;
@@ -45,7 +45,7 @@ type Props = {
   bookId: string;
 };
 
-async function createRecord(data: MutateRecordRequest) {
+async function createRecord(data: MutateRecordRequest): Promise<RecordRes> {
   const res = await axios.post(`/api/books/${data.bookId}/records`, data);
   return res.data;
 }
@@ -116,7 +116,7 @@ export default function CreateForm({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <SheetContent
             className="w-full sm:w-[540px]  px-2 py-1"
-            enableDefaultClose={false}
+            enableDefaultCloseBtn={false}
             aria-describedby="modal-description"
           >
             <VisuallyHidden.Root>

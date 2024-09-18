@@ -27,7 +27,9 @@ export const getRecordsByBookIdAndDate = async (
   return res.data;
 };
 
-export const createRecord = async (data: MutateRecordRequest) => {
+export const createRecord = async (
+  data: MutateRecordRequest
+): Promise<RecordRes> => {
   const res = await axiosBackendInstance.post(`/records`, data);
   return res.data;
 };
@@ -35,7 +37,7 @@ export const createRecord = async (data: MutateRecordRequest) => {
 export const updateRecord = async (
   recordId: string,
   data: MutateRecordRequest
-) => {
+): Promise<RecordRes> => {
   const res = await axiosBackendInstance.put(`/records/${recordId}`, data);
   return res.data;
 };
