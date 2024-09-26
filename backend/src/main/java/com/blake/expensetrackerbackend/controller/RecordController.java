@@ -7,6 +7,7 @@ import com.blake.expensetrackerbackend.model.response.QueryAllRecordResponse;
 import com.blake.expensetrackerbackend.service.api.RecordApiService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,8 +35,9 @@ public class RecordController {
         return recordService.updateRecord(recordId, request);
     }
 
+    // TODO 通過驗證來判斷是否可以刪除該資料
     @DeleteMapping("/{id}")
-    public void deleteRecord(@PathVariable Long id){
-        System.out.println("Delete record with id: " + id);
+    public ResponseEntity<Void> deleteRecord(@PathVariable String id){
+        return recordService.deleteRecord(id);
     }
 }

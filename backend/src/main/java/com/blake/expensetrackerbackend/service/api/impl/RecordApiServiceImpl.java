@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -120,6 +121,12 @@ public class RecordApiServiceImpl implements RecordApiService {
                 existingRecord.getBookId(),
                 existingRecord.getType().name()
         );
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteRecord(String recordId) {
+        recordRepository.deleteById(recordId);
+        return ResponseEntity.noContent().build();
     }
 
     private void validateBookExists(String bookId) {

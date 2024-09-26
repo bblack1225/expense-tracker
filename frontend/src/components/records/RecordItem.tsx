@@ -64,7 +64,7 @@ export default function RecordItem({
   return (
     <>
       <div
-        key={item.id}
+        // key={item.id}
         className={clsx("p-2 flex justify-between  border-b cursor-pointer")}
       >
         <div className="flex items-center">

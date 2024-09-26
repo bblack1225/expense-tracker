@@ -36,6 +36,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 type Props = {
   categories: GroupCategories;
@@ -148,7 +159,7 @@ export default function EditForm({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <SheetContent
-            className="w-full sm:w-[540px] px-0 py-1"
+            className="w-full sm:max-w-[500px] px-0 py-1"
             // 自己定義的屬性，是否需要啟用預設的關閉按鈕
             enableDefaultCloseBtn={false}
           >
@@ -158,8 +169,13 @@ export default function EditForm({
             <VisuallyHidden.Root>
               <SheetDescription />
             </VisuallyHidden.Root>
-            <SheetHeader className="flex flex-row justify-between items-center pr-2  py-1">
-              <Button variant={"ghost"} size={"icon"} onClick={handleClose}>
+            <SheetHeader className="flex flex-row justify-between items-center px-1 py-1">
+              <Button
+                className="mt-0"
+                variant={"ghost"}
+                size={"icon"}
+                onClick={handleClose}
+              >
                 <X size={24} />
               </Button>
               <div className="flex bg-muted rounded-lg p-1 mt-0">
@@ -182,9 +198,27 @@ export default function EditForm({
                   收入
                 </button>
               </div>
-              <Button variant={"ghost"} size={"icon"}>
-                <Trash2 />
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button className="mt-0" variant={"ghost"} size={"icon"}>
+                    <Trash2 />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>刪除</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      請問您確定要刪除此筆紀錄?
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>取消</AlertDialogCancel>
+                    <AlertDialogAction asChild>
+                      <Button onClick={() => setIsOpen(false)}>確認</Button>
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </SheetHeader>
             <div className="rounded-md bg-card p-4 md:p-6 ">
               <div className="flex flex-col gap-4 ">
