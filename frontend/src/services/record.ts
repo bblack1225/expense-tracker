@@ -41,3 +41,7 @@ export const updateRecord = async (
   const res = await axiosBackendInstance.put(`/records/${recordId}`, data);
   return res.data;
 };
+
+export const deleteRecord = async (recordId: string) => {
+  return await axiosBackendInstance.delete(`/records/${recordId}`);
+};

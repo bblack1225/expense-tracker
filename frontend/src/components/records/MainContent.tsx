@@ -10,7 +10,6 @@ import {
   MonthRecords,
   RecordRes,
 } from "@/types/record";
-import { getRecordsByBookIdAndDate } from "@/services/record";
 import { getCalendarRange, parseToDateSlash } from "@/lib/dateUtil";
 import { useParams } from "next/navigation";
 import CalendarViewTable from "./CalendarViewTable";

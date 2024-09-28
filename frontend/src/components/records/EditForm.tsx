@@ -64,6 +64,10 @@ async function updateRecord(
   return res.data;
 }
 
+async function deleteRecord(recordId: string) {
+  return await axios.delete(`/api/records/${recordId}`);
+}
+
 const findCategory = (categories: CategoryRes[], categoryId: string) => {
   return categories.find((category) => category.id === categoryId) || null;
 };
@@ -128,6 +132,13 @@ export default function EditForm({
     },
   });
 
+  const { mutate: deleteRec } = useMutation({
+    mutationFn: (recordId: string) => deleteRecord(recordId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["records"] });
+    },
+  });
+
   const onSubmit = async (data: RecordFormInput) => {
     const payload = {
       memberId: data.member,
@@ -144,6 +155,11 @@ export default function EditForm({
   const handleClose = () => {
     setIsOpen(false);
     form.reset();
+  };
+
+  const handleDelete = (): void => {
+    deleteRec(item.id);
+    setIsOpen(false);
   };
 
   return (
@@ -214,7 +230,7 @@ export default function EditForm({
                   <AlertDialogFooter>
                     <AlertDialogCancel>取消</AlertDialogCancel>
                     <AlertDialogAction asChild>
-                      <Button onClick={() => setIsOpen(false)}>確認</Button>
+                      <Button onClick={handleDelete}>確認</Button>
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>

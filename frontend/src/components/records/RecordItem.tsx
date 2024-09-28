@@ -2,31 +2,24 @@ import { GroupCategories, CategoryRes } from "@/types/category";
 import { MemberQuery } from "@/types/member";
 import { RecordRes } from "@/types/record";
 import clsx from "clsx";
-import { Delete, Pencil, Trash2, X } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 // import Icon from "./icon";
 import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useState } from "react";
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-// import Form from "./create/Form";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../ui/sheet";
 import EditForm from "./EditForm";
-
-// import EditForm from "./editForm";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   item: RecordRes;
@@ -47,6 +40,10 @@ const getMemberNameById = (members: MemberQuery[], memberId: string) => {
   return member?.name;
 };
 
+async function deleteRecord(recordId: string) {
+  return await axios.delete(`/api/records/${recordId}`);
+}
+
 export default function RecordItem({
   item,
   members,
@@ -61,6 +58,18 @@ export default function RecordItem({
   );
   const memberName = getMemberNameById(members, item.memberId);
   const [isEditing, setIsEditing] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteRec } = useMutation({
+    mutationFn: (recordId: string) => deleteRecord(recordId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["records"] });
+    },
+  });
+
+  const handleDelete = (): void => {
+    deleteRec(item.id);
+  };
   return (
     <>
       <div
@@ -100,12 +109,37 @@ export default function RecordItem({
             )}
             <Button
               variant={"outline"}
-              size={"sm"}
-              className="px-2"
+              size={"icon-sm"}
+              className="px-2 rounded-full"
               onClick={() => setIsEditing(true)}
             >
               <Pencil size={16} />
             </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  className="mt-0 px-2 rounded-full"
+                  variant={"outline"}
+                  size={"icon-sm"}
+                >
+                  <Trash2 size={16} />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>刪除</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    請問您確定要刪除此筆紀錄?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>取消</AlertDialogCancel>
+                  <AlertDialogAction asChild>
+                    <Button onClick={handleDelete}>確認</Button>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </div>
