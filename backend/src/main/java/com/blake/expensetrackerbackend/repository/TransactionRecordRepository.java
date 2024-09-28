@@ -11,6 +11,6 @@ import java.util.List;
 public interface TransactionRecordRepository extends JpaRepository<TransactionRecord, String>, JpaSpecificationExecutor<TransactionRecord> {
 
     @Query("SELECT tr from TransactionRecord tr WHERE  tr.bookId = :bookId AND " +
-            "tr.transactionDate between :start AND :end order by tr.transactionDate")
+            "tr.transactionDate between :start AND :end order by tr.transactionDate desc")
     List<TransactionRecord> queryAllRecords(String bookId, LocalDate start, LocalDate end);
 }
