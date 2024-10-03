@@ -7,19 +7,9 @@ import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import EditForm from "./EditForm";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
-import axios from "axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AlertDialog, AlertDialogTrigger } from "../ui/alert-dialog";
+import { useDeleteRecord } from "@/hooks/useDeleteRecord";
+import { DeleteRecordAlertDialog } from "./DeleteRecordAlertDialog";
 
 type Props = {
   item: RecordRes;
@@ -40,16 +30,13 @@ const getMemberNameById = (members: MemberQuery[], memberId: string) => {
   return member?.name;
 };
 
-async function deleteRecord(recordId: string) {
-  return await axios.delete(`/api/records/${recordId}`);
-}
-
 export default function RecordItem({
   item,
   members,
   categories,
   borderStyle,
 }: Props) {
+  const [isEditing, setIsEditing] = useState(false);
   const { inCategories, outCategories } = categories;
   const selectedCategories = item.type === "IN" ? inCategories : outCategories;
   const { name: categoryName, icon: categoryIcon } = getCategoryById(
@@ -57,19 +44,9 @@ export default function RecordItem({
     item.categoryId
   );
   const memberName = getMemberNameById(members, item.memberId);
-  const [isEditing, setIsEditing] = useState(false);
-  const queryClient = useQueryClient();
+  const { deleteDialogOpen, setDeleteDialogOpen, isDeleting, handleDelete } =
+    useDeleteRecord();
 
-  const { mutate: deleteRec } = useMutation({
-    mutationFn: (recordId: string) => deleteRecord(recordId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["records"] });
-    },
-  });
-
-  const handleDelete = (): void => {
-    deleteRec(item.id);
-  };
   return (
     <>
       <div
@@ -115,7 +92,10 @@ export default function RecordItem({
             >
               <Pencil size={16} />
             </Button>
-            <AlertDialog>
+            <AlertDialog
+              open={deleteDialogOpen}
+              onOpenChange={setDeleteDialogOpen}
+            >
               <AlertDialogTrigger asChild>
                 <Button
                   className="mt-0 px-2 rounded-full"
@@ -125,20 +105,10 @@ export default function RecordItem({
                   <Trash2 size={16} />
                 </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>刪除</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    請問您確定要刪除此筆紀錄?
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>取消</AlertDialogCancel>
-                  <AlertDialogAction asChild>
-                    <Button onClick={handleDelete}>確認</Button>
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
+              <DeleteRecordAlertDialog
+                onDelete={() => handleDelete(item.id)}
+                isDeleting={isDeleting}
+              />
             </AlertDialog>
           </div>
         </div>

@@ -29,24 +29,16 @@ import {
   SheetTitle,
 } from "../ui/sheet";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RecordFormInput, RecordFormSchema } from "@/schema/recordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
+import { AlertDialog, AlertDialogTrigger } from "../ui/alert-dialog";
+import { useDeleteRecord } from "@/hooks/useDeleteRecord";
+import { DeleteRecordAlertDialog } from "./DeleteRecordAlertDialog";
 
 type Props = {
   categories: GroupCategories;
@@ -64,10 +56,6 @@ async function updateRecord(
   return res.data;
 }
 
-async function deleteRecord(recordId: string) {
-  return await axios.delete(`/api/records/${recordId}`);
-}
-
 const findCategory = (categories: CategoryRes[], categoryId: string) => {
   return categories.find((category) => category.id === categoryId) || null;
 };
@@ -81,14 +69,17 @@ export default function EditForm({
 }: Props) {
   const { inCategories, outCategories } = categories;
   const currentCategories = item.type === "IN" ? inCategories : outCategories;
-  const [recordType, setRecordType] = useState<"IN" | "OUT">(item.type);
   const initialCategory = findCategory(currentCategories, item.categoryId);
+
+  const [recordType, setRecordType] = useState<"IN" | "OUT">(item.type);
+  const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState({
     name: initialCategory?.name || "",
     id: initialCategory?.id || "",
   });
+  const { deleteDialogOpen, setDeleteDialogOpen, isDeleting, handleDelete } =
+    useDeleteRecord(() => setIsOpen(false));
 
-  const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const form = useForm<RecordFormInput>({
@@ -132,13 +123,6 @@ export default function EditForm({
     },
   });
 
-  const { mutate: deleteRec } = useMutation({
-    mutationFn: (recordId: string) => deleteRecord(recordId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["records"] });
-    },
-  });
-
   const onSubmit = async (data: RecordFormInput) => {
     const payload = {
       memberId: data.member,
@@ -155,11 +139,6 @@ export default function EditForm({
   const handleClose = () => {
     setIsOpen(false);
     form.reset();
-  };
-
-  const handleDelete = (): void => {
-    deleteRec(item.id);
-    setIsOpen(false);
   };
 
   return (
@@ -214,26 +193,19 @@ export default function EditForm({
                   收入
                 </button>
               </div>
-              <AlertDialog>
+              <AlertDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+              >
                 <AlertDialogTrigger asChild>
                   <Button className="mt-0" variant={"ghost"} size={"icon"}>
                     <Trash2 />
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>刪除</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      請問您確定要刪除此筆紀錄?
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>取消</AlertDialogCancel>
-                    <AlertDialogAction asChild>
-                      <Button onClick={handleDelete}>確認</Button>
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
+                <DeleteRecordAlertDialog
+                  onDelete={() => handleDelete(item.id)}
+                  isDeleting={isDeleting}
+                />
               </AlertDialog>
             </SheetHeader>
             <div className="rounded-md bg-card p-4 md:p-6 ">
