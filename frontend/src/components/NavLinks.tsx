@@ -36,7 +36,7 @@ export default function NavLinks({ onNavChange }: Props) {
                 : "bg-gray-50 text-slate-500"
             )}
             onClick={() => {
-              router.push(link.href.toString());
+              router.push(linkPath);
               onNavChange(false);
             }}
           >
