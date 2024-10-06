@@ -10,7 +10,11 @@ import {
   MonthRecords,
   RecordRes,
 } from "@/types/record";
-import { getCalendarRange, parseToDateSlash } from "@/lib/dateUtil";
+import {
+  getCalendarRange,
+  parseDateString,
+  parseToDateSlash,
+} from "@/lib/dateUtil";
 import { useParams } from "next/navigation";
 import CalendarViewTable from "./CalendarViewTable";
 import axios from "axios";
@@ -121,6 +125,11 @@ export default function MainContent({ categories, members }: Props) {
     setCurrentDate((prev) => ({ ...prev, year: val }));
   };
 
+  const handleCurrentDateChange = (date: string) => {
+    const dateObj = parseDateString(date);
+    setCurrentDate(dateObj);
+  };
+
   const {
     data: records = {
       data: [],
@@ -202,6 +211,7 @@ export default function MainContent({ categories, members }: Props) {
         members={members}
         isOpen={isCreateSheetOpen}
         setIsOpen={setIsCreateSheetOpen}
+        onCurrentDateChange={handleCurrentDateChange}
       />
     </>
   );

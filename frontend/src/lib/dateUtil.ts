@@ -52,3 +52,8 @@ export const getWeekDay = (dateStr: string) => {
   const date = new Date(dateStr);
   return daysOfWeek[date.getDay()];
 };
+
+export const parseDateString = (dateStr: string) => {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  return { year, month, day };
+};

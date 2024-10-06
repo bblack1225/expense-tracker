@@ -43,6 +43,7 @@ type Props = {
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
   bookId: string;
+  onCurrentDateChange: (date: string) => void;
 };
 
 async function createRecord(data: MutateRecordRequest): Promise<RecordRes> {
@@ -56,6 +57,7 @@ export default function CreateForm({
   isOpen,
   setIsOpen,
   bookId,
+  onCurrentDateChange,
 }: Props) {
   const { inCategories, outCategories } = categories;
   const form = useForm<RecordFormInput>({
@@ -89,12 +91,12 @@ export default function CreateForm({
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: MutateRecordRequest) => createRecord(data),
-    onSuccess: () => {
+    onSuccess: (res: RecordRes) => {
       setIsOpen(false);
       setSelectedCategory({ name: "", id: "" });
       form.reset();
-
       queryClient.invalidateQueries({ queryKey: ["records"] });
+      onCurrentDateChange(res.transactionDate);
     },
   });
 
