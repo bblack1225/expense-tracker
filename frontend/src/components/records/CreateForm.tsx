@@ -37,13 +37,14 @@ import { ScrollArea } from "../ui/scroll-area";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MutateRecordRequest, RecordRes } from "@/types/record";
 import axios from "axios";
+import { parseDateString } from "@/lib/dateUtil";
+import { useCurrentDateStore } from "@/providers/current-date-store-provider";
 type Props = {
   categories: GroupCategories;
   members: MemberQuery[];
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
   bookId: string;
-  onCurrentDateChange: (date: string) => void;
 };
 
 async function createRecord(data: MutateRecordRequest): Promise<RecordRes> {
@@ -57,7 +58,6 @@ export default function CreateForm({
   isOpen,
   setIsOpen,
   bookId,
-  onCurrentDateChange,
 }: Props) {
   const { inCategories, outCategories } = categories;
   const form = useForm<RecordFormInput>({
@@ -78,6 +78,7 @@ export default function CreateForm({
     id: "",
   });
   const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
+  const { setCurrentDate } = useCurrentDateStore((state) => state);
 
   const handleCategorySelect = (category: CategoryRes) => {
     setSelectedCategory({
@@ -95,8 +96,9 @@ export default function CreateForm({
       setIsOpen(false);
       setSelectedCategory({ name: "", id: "" });
       form.reset();
+      const updatedDate = parseDateString(res.transactionDate);
+      setCurrentDate(updatedDate);
       queryClient.invalidateQueries({ queryKey: ["records"] });
-      onCurrentDateChange(res.transactionDate);
     },
   });
 

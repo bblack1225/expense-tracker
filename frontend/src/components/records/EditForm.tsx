@@ -39,6 +39,8 @@ import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { AlertDialog, AlertDialogTrigger } from "../ui/alert-dialog";
 import { useDeleteRecord } from "@/hooks/useDeleteRecord";
 import { DeleteRecordAlertDialog } from "./DeleteRecordAlertDialog";
+import { useCurrentDateStore } from "@/providers/current-date-store-provider";
+import { parseDateString } from "@/lib/dateUtil";
 
 type Props = {
   categories: GroupCategories;
@@ -81,6 +83,7 @@ export default function EditForm({
     useDeleteRecord(() => setIsOpen(false));
 
   const queryClient = useQueryClient();
+  const { setCurrentDate } = useCurrentDateStore((state) => state);
 
   const form = useForm<RecordFormInput>({
     resolver: zodResolver(RecordFormSchema),
@@ -106,6 +109,8 @@ export default function EditForm({
   const { mutate, isPending } = useMutation({
     mutationFn: (data: MutateRecordRequest) => updateRecord(item.id, data),
     onSuccess: (updateRecord) => {
+      const updatedDate = parseDateString(updateRecord.transactionDate);
+      setCurrentDate(updatedDate);
       setIsOpen(false);
       const category = findCategory(
         currentCategories,

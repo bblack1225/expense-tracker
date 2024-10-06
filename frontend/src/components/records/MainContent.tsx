@@ -4,17 +4,8 @@ import { MemberQuery } from "@/types/member";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  DateState,
-  GroupRecords,
-  MonthRecords,
-  RecordRes,
-} from "@/types/record";
-import {
-  getCalendarRange,
-  parseDateString,
-  parseToDateSlash,
-} from "@/lib/dateUtil";
+import { GroupRecords, MonthRecords, RecordRes } from "@/types/record";
+import { getCalendarRange, parseToDateSlash } from "@/lib/dateUtil";
 import { useParams } from "next/navigation";
 import CalendarViewTable from "./CalendarViewTable";
 import axios from "axios";
@@ -23,6 +14,7 @@ import ListViewTable from "./ListViewTable";
 import DatePickerBar from "./DatePickerBar";
 import { Button } from "../ui/button";
 import CreateForm from "./CreateForm";
+import { useCurrentDateStore } from "@/providers/current-date-store-provider";
 
 type Props = {
   categories: GroupCategories;
@@ -87,48 +79,8 @@ export default function MainContent({ categories, members }: Props) {
   const params = useParams<{ bookId: string }>();
   const { bookId } = params;
 
-  const [currentDate, setCurrentDate] = useState<DateState>({
-    year: new Date().getFullYear(),
-    month: new Date().getMonth() + 1,
-    day: new Date().getDate(),
-  });
   const [isCreateSheetOpen, setIsCreateSheetOpen] = useState(false);
-
-  const handleDateChange = (monthVal: number, dayVal?: number) => {
-    let newMonth;
-    let newYear;
-    let newDay = dayVal ? dayVal : currentDate.day;
-    if (monthVal > 12) {
-      newMonth = 1;
-      newYear = currentDate.year + 1;
-    } else if (monthVal < 1) {
-      newMonth = 12;
-      newYear = currentDate.year - 1;
-    } else {
-      newMonth = monthVal;
-      newYear = currentDate.year;
-    }
-    const lastDayOfMonth = new Date(newYear, newMonth, 0).getDate();
-
-    if (newDay > lastDayOfMonth) {
-      newDay = lastDayOfMonth;
-    }
-
-    setCurrentDate({
-      year: newYear,
-      month: newMonth,
-      day: newDay,
-    });
-  };
-
-  const handleYearChange = (val: number) => {
-    setCurrentDate((prev) => ({ ...prev, year: val }));
-  };
-
-  const handleCurrentDateChange = (date: string) => {
-    const dateObj = parseDateString(date);
-    setCurrentDate(dateObj);
-  };
+  const { currentDate } = useCurrentDateStore((state) => state);
 
   const {
     data: records = {
@@ -161,11 +113,7 @@ export default function MainContent({ categories, members }: Props) {
             <TabsTrigger value="calendar">行事曆</TabsTrigger>
           </TabsList>
         </div>
-        <DatePickerBar
-          onDateChange={handleDateChange}
-          onYearChange={handleYearChange}
-          currentDate={currentDate}
-        />
+        <DatePickerBar />
         {isPending ? (
           <div className="flex justify-center items-center h-50 font-extrabold text-xl">
             載入中...
@@ -195,8 +143,6 @@ export default function MainContent({ categories, members }: Props) {
             </TabsContent>
             <TabsContent value="calendar">
               <CalendarViewTable
-                currentDate={currentDate}
-                onDateChange={handleDateChange}
                 groupRecords={records.calendarRecords}
                 categories={categories}
                 members={members}
@@ -211,7 +157,6 @@ export default function MainContent({ categories, members }: Props) {
         members={members}
         isOpen={isCreateSheetOpen}
         setIsOpen={setIsCreateSheetOpen}
-        onCurrentDateChange={handleCurrentDateChange}
       />
     </>
   );

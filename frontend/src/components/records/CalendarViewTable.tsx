@@ -1,15 +1,14 @@
 import { GroupCategories } from "@/types/category";
 import { MemberQuery } from "@/types/member";
-import { DateState, RecordRes } from "@/types/record";
+import { RecordRes } from "@/types/record";
 import { formatToYYYYMMDD } from "@/lib/dateUtil";
 import clsx from "clsx";
 import RecordItem from "./RecordItem";
+import { useCurrentDateStore } from "@/providers/current-date-store-provider";
 
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
 
 type Props = {
-  currentDate: DateState;
-  onDateChange: (month: number, day: number) => void;
   groupRecords: {
     [key: string]: {
       data: RecordRes[];
@@ -22,12 +21,11 @@ type Props = {
 };
 
 export default function CalendarViewTable({
-  currentDate,
-  onDateChange,
   groupRecords,
   categories,
   members,
 }: Props) {
+  const { currentDate, onDateChange } = useCurrentDateStore((state) => state);
   const { year, month, day } = currentDate;
   const daysInMonth = new Date(year, month, 0).getDate();
 
@@ -45,6 +43,8 @@ export default function CalendarViewTable({
   );
 
   const handleLastMonthDayChange = (day: number) => {
+    console.log("handleLastMonthDayChange day", day);
+
     onDateChange(month - 1, day);
   };
 

@@ -4,20 +4,17 @@ import { useState } from "react";
 import { DateState } from "@/types/record";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import MonthPicker from "./MonthPicker";
+import { useCurrentDateStore } from "@/providers/current-date-store-provider";
 
-type Props = {
-  onDateChange: (month: number) => void;
-  currentDate: DateState;
-  onYearChange: (val: number) => void;
-};
-
-export default function DatePickerBar({
-  onDateChange,
-  currentDate,
-  onYearChange,
-}: Props) {
+export default function DatePickerBar() {
   const [isDetailShow, setIsDetailShow] = useState(false);
+  const { currentDate, setCurrentDate, onDateChange } = useCurrentDateStore(
+    (state) => state
+  );
   const { year, month } = currentDate;
+  const handleYearChange = (val: number) => {
+    setCurrentDate({ ...currentDate, year: val });
+  };
   return (
     <div className="flex flex-col  justify-between my-2 w-full relative px-3">
       <div className="flex ">
@@ -62,7 +59,7 @@ export default function DatePickerBar({
             onDateChange(val);
             setIsDetailShow(false);
           }}
-          onYearChange={(val) => onYearChange(year + val)}
+          onYearChange={(val) => handleYearChange(year + val)}
         />
       </div>
     </div>

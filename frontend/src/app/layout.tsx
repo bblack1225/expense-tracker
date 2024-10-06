@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Providers from "@/components/Providers";
+import { CurrentDateStoreProvider } from "@/providers/current-date-store-provider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -24,7 +25,9 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        <Providers>{children}</Providers>
+        <CurrentDateStoreProvider>
+          <Providers>{children}</Providers>
+        </CurrentDateStoreProvider>
       </body>
     </html>
   );
