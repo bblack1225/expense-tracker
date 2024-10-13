@@ -1,15 +1,37 @@
-// import iconList from "@/utils/iconList";
-import { CircleHelp } from "lucide-react";
+import { Circle, CircleHelp, type LucideProps, icons } from "lucide-react";
 
-type Props = {
-  name: string;
-};
+type IconComponentName = keyof typeof icons;
 
-export default function Icon({ name, ...props }: Props) {
-  //   const IconComponent = iconList[name];
-  //   if (!IconComponent) {
-  return <CircleHelp />;
-  //   }
+interface IconProps extends LucideProps {
+  name: string; // because this is coming from the CMS
+}
 
-  //   return <IconComponent {...props} />;
+// 👮‍♀️ guard
+function isValidIconComponent(
+  componentName: string
+): componentName is IconComponentName {
+  return componentName in icons;
+}
+
+export function DynamicIcon({ name, ...props }: IconProps) {
+  // we need to convert kebab-case to PascalCase because we formerly relied on
+  // lucide-react/dynamicIconImports and the icon names are what are stored in the CMS.
+  const kebabToPascal = (str: string) =>
+    str
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join("");
+
+  const componentName = kebabToPascal(name);
+
+  // ensure what is in the CMS is a valid icon component
+  if (!isValidIconComponent(componentName)) {
+    return <CircleHelp {...props} />;
+  }
+
+  // lucide-react/dynamicIconImports makes makes NextJS development server very slow
+  // https://github.com/lucide-icons/lucide/issues/1576
+  const Icon = icons[componentName];
+
+  return <Icon {...props} />;
 }

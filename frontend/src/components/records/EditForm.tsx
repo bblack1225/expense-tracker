@@ -73,6 +73,7 @@ export default function EditForm({
   const currentCategories = item.type === "IN" ? inCategories : outCategories;
   const initialCategory = findCategory(currentCategories, item.categoryId);
 
+  // TODO 關閉時要reset
   const [recordType, setRecordType] = useState<"IN" | "OUT">(item.type);
   const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState({
