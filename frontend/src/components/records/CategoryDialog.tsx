@@ -1,5 +1,6 @@
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -7,11 +8,14 @@ import {
 } from "../ui/dialog";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { CategoryRes } from "@/types/category";
-import { DynamicIcon } from "./Icon";
+import Icon from "./Icon";
 import EmojiPicker, { Emoji, Categories } from "emoji-picker-react";
 import { useState } from "react";
-import { CircleHelp } from "lucide-react";
+import { ChevronLeft, CircleHelp } from "lucide-react";
 import { Input } from "../ui/input";
+import iconList from "@/constants/iconList";
+import iconDictionary from "@/constants/iconList";
+import { Button } from "../ui/button";
 
 type Props = {
   open: boolean;
@@ -19,7 +23,6 @@ type Props = {
   categories: CategoryRes[];
   onSelectCategory: (category: CategoryRes) => void;
 };
-const ICON_LIST = ["beef", "house", "piggy-bank", "utensils", "credit-card"];
 
 export default function CategoryDialog({
   open,
@@ -28,9 +31,7 @@ export default function CategoryDialog({
   onSelectCategory,
 }: Props) {
   const [isAddCategoryDialogOpen, setIsAddCategoryDialogOpen] = useState(false);
-  const [emojiVal, setEmojiVal] = useState("");
-
-  console.log("categories", categories);
+  const [emojiVal, setEmojiVal] = useState("utensils");
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -48,9 +49,9 @@ export default function CategoryDialog({
               className="h-20 bg-card flex flex-col justify-center items-center  rounded-md text-sm font-bold cursor-pointer"
               onClick={() => onSelectCategory(category)}
             >
-              {/* <div>
-                <DynamicIcon name={category.icon} />
-              </div> */}
+              <div>
+                <Icon name={category.icon} />
+              </div>
               <div>{category.name}</div>
             </div>
           ))}
@@ -66,24 +67,43 @@ export default function CategoryDialog({
         </div>
       </DialogContent>
 
-      {/* 新增類別的 Dialog */}
       <Dialog
         open={isAddCategoryDialogOpen}
         onOpenChange={setIsAddCategoryDialogOpen}
       >
-        <DialogContent className="h-screen w-screen flex flex-col p-4">
-          <DialogHeader className="p-4 shrink-0">
-            <DialogTitle>新增類別</DialogTitle>
-            <VisuallyHidden.Root>
-              <DialogDescription />
-            </VisuallyHidden.Root>
-          </DialogHeader>
-          <div className="overflow-auto">
+        <DialogContent
+          className="h-screen w-screen flex flex-col px-0 py-0"
+          enableDefaultCloseBtn={false}
+        >
+          {/* <DialogHeader className="shrink-0 "> */}
+          <VisuallyHidden.Root>
+            <DialogTitle />
+          </VisuallyHidden.Root>
+          {/* <DialogTitle>新增類別</DialogTitle> */}
+          <VisuallyHidden.Root>
+            <DialogDescription />
+          </VisuallyHidden.Root>
+          <div className="flex justify-between items-center border-b p-2 ">
+            {/* <div className="flex"> */}
+            <DialogClose asChild>
+              <Button className="bg-primary">
+                <ChevronLeft />
+              </Button>
+            </DialogClose>
+            {/* </div> */}
+            <div className="text-lg font-bold ">新增類別</div>
+            <div>
+              <Button className="text-md bg-primary">儲存</Button>
+            </div>
+          </div>
+          {/* </DialogHeader> */}
+
+          <div className="overflow-auto px-3">
             <div
               className={`flex items-center border rounded-lg p-2 transition-all duration-300 mb-4
               }`}
             >
-              {/* <DynamicIcon name={emojiVal} size={24} /> */}
+              <Icon name={emojiVal} />
               <Input
                 type="text"
                 placeholder="輸入類別名稱"
@@ -94,17 +114,17 @@ export default function CategoryDialog({
                 }}
               />
             </div>
-            {/* <div className="grid grid-cols-4 border rounded-md gap-4 p-2">
-              {ICON_LIST.map((item) => (
+            <div className="grid grid-cols-4 border rounded-md gap-4 p-2 ">
+              {Object.keys(iconDictionary).map((key) => (
                 <div
-                  key={item}
-                  className=" p-2 my-0 mx-auto"
-                  onClick={() => setEmojiVal(item)}
+                  key={key}
+                  className=" p-2 my-0 mx-auto cursor-pointer"
+                  onClick={() => setEmojiVal(key)}
                 >
-                  <DynamicIcon name={item} />
+                  <Icon name={key} />
                 </div>
               ))}
-            </div> */}
+            </div>
           </div>
         </DialogContent>
       </Dialog>
