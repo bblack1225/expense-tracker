@@ -1,21 +1,18 @@
+import iconDictionary from "@/constants/iconList";
+import { CategoryRes } from "@/types/category";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import { CategoryRes } from "@/types/category";
-import Icon from "./Icon";
-import EmojiPicker, { Emoji, Categories } from "emoji-picker-react";
-import { useState } from "react";
-import { ChevronLeft, CircleHelp } from "lucide-react";
 import { Input } from "../ui/input";
-import iconList from "@/constants/iconList";
-import iconDictionary from "@/constants/iconList";
-import { Button } from "../ui/button";
+import Icon from "./Icon";
 
 type Props = {
   open: boolean;
@@ -60,7 +57,7 @@ export default function CategoryDialog({
             onClick={() => setIsAddCategoryDialogOpen(true)}
           >
             <p>
-              <Emoji unified="2795" size={20} />
+              <Plus />
             </p>
             <div>新增類別</div>
           </div>
@@ -72,58 +69,58 @@ export default function CategoryDialog({
         onOpenChange={setIsAddCategoryDialogOpen}
       >
         <DialogContent
-          className="h-screen w-screen flex flex-col px-0 py-0"
+          className="h-screen w-screen flex flex-col px-0 py-0 "
           enableDefaultCloseBtn={false}
         >
-          {/* <DialogHeader className="shrink-0 "> */}
           <VisuallyHidden.Root>
             <DialogTitle />
           </VisuallyHidden.Root>
-          {/* <DialogTitle>新增類別</DialogTitle> */}
           <VisuallyHidden.Root>
             <DialogDescription />
           </VisuallyHidden.Root>
-          <div className="flex justify-between items-center border-b p-2 ">
-            {/* <div className="flex"> */}
+          <div className="flex justify-between items-center border-b p-2 bg-primary">
             <DialogClose asChild>
-              <Button className="bg-primary">
-                <ChevronLeft />
-              </Button>
+              <Button className="text-md bg-primary">取消</Button>
             </DialogClose>
-            {/* </div> */}
-            <div className="text-lg font-bold ">新增類別</div>
+            <div className="text-lg font-bold text-white">新增類別</div>
             <div>
               <Button className="text-md bg-primary">儲存</Button>
             </div>
           </div>
-          {/* </DialogHeader> */}
-
-          <div className="overflow-auto px-3">
-            <div
-              className={`flex items-center border rounded-lg p-2 transition-all duration-300 mb-4
+          <div className="flex flex-col h-full">
+            <div className="mb-4 px-3">
+              <div
+                className={`flex items-center border rounded-lg p-2 transition-all duration-300 mb-4
               }`}
-            >
-              <Icon name={emojiVal} />
-              <Input
-                type="text"
-                placeholder="輸入類別名稱"
-                className="border-0 outline-none flex-grow text-base"
-                enableFocusRing={false}
-                onChange={(e) => {
-                  // 處理輸入變化
-                }}
-              />
+              >
+                <Icon name={emojiVal} />
+                <Input
+                  type="text"
+                  placeholder="輸入類別名稱"
+                  className="border-0 outline-none flex-grow text-base"
+                  enableFocusRing={false}
+                  onChange={(e) => {
+                    // 處理輸入變化
+                  }}
+                />
+              </div>
             </div>
-            <div className="grid grid-cols-4 border rounded-md gap-4 p-2 ">
-              {Object.keys(iconDictionary).map((key) => (
-                <div
-                  key={key}
-                  className=" p-2 my-0 mx-auto cursor-pointer"
-                  onClick={() => setEmojiVal(key)}
-                >
-                  <Icon name={key} />
+            <div className="flex-1  px-3">
+              <div className="h-5/6 border rounded-md p-2">
+                <div className="h-full overflow-y-auto">
+                  <div className="grid grid-cols-4  gap-4 p-2">
+                    {Object.keys(iconDictionary).map((key) => (
+                      <div
+                        key={key}
+                        className=" p-2 my-0 mx-auto cursor-pointer"
+                        onClick={() => setEmojiVal(key)}
+                      >
+                        <Icon name={key} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </DialogContent>
