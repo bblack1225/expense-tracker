@@ -32,7 +32,7 @@ export default function CategoryDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="h-screen w-screen">
+      <DialogContent className="h-full w-screen border-none">
         <VisuallyHidden.Root>
           <DialogTitle />
         </VisuallyHidden.Root>
@@ -63,13 +63,12 @@ export default function CategoryDialog({
           </div>
         </div>
       </DialogContent>
-
       <Dialog
         open={isAddCategoryDialogOpen}
         onOpenChange={setIsAddCategoryDialogOpen}
       >
         <DialogContent
-          className="h-screen w-screen flex flex-col px-0 py-0 "
+          className="h-full w-screen flex flex-col  px-0 py-0 border-none"
           enableDefaultCloseBtn={false}
         >
           <VisuallyHidden.Root>
@@ -105,9 +104,9 @@ export default function CategoryDialog({
                 />
               </div>
             </div>
-            <div className="flex-1  px-3">
+            <div className="h-4/6 sm:h-5/6  px-3 ">
               <div className="h-5/6 border rounded-md p-2">
-                <div className="h-full overflow-y-auto">
+                <div className="h-full  overflow-y-auto">
                   <div className="grid grid-cols-4  gap-4 p-2">
                     {Object.keys(iconDictionary).map((key) => (
                       <div
